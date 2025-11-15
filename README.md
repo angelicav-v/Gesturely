@@ -1,4 +1,4 @@
-# gesturely
+# Gesturely
 
 A new Flutter project.
 
