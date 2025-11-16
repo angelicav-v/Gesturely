@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/background.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -220,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   modules[index]['title'],
                                   style: const TextStyle(
                                     fontSize: 20,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w400,
                                     color: Color(0xFF2C3E50),
                                   ),
                                   textAlign: TextAlign.center,
@@ -241,8 +242,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Expanded(
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(1.0),
+                                      color: Color(0xFFFFFFFF),
                                       borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.15),
+                                          blurRadius: 60,
+                                          offset: const Offset(0, 20),
+                                          spreadRadius: 0,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -403,16 +412,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Calendar button
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      child: Icon(
-                        Icons.calendar_month,
-                        color: Colors.grey[400],
-                        size: 26,
+                    // Modules/Apps button
+                    GestureDetector(
+                      onTap: () => context.go('/modules-grid'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Icon(
+                          Icons.apps,
+                          color: Colors.grey[400],
+                          size: 26,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
