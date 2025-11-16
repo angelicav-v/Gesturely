@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/background.dart';
+import 'settingscreen.dart';
 
 class SubsectionWordsListScreen extends StatefulWidget {
   final int moduleNumber;
@@ -64,6 +65,7 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                   vertical: 12,
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
@@ -96,13 +98,43 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
                     Text(
                       widget.subsectionTitle,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF2C3E50),
+                      ),
+                    ),
+                    // Settings icon
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SettingsScreen(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.06),
+                              blurRadius: 12,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.settings,
+                          color: const Color(0xFF2C3E50),
+                          size: 20,
+                        ),
                       ),
                     ),
                   ],
