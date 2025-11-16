@@ -170,7 +170,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
 
   void _initializeVideo() {
     // Use asset video - make sure to add this to pubspec.yaml
-    _videoController = VideoPlayerController.asset('assets/videos/i_dont_know.mp4');
+    _videoController = VideoPlayerController.asset('assets/i_dont_know.mp4');
     _videoController!.initialize().then((_) {
       if (mounted) {
         setState(() {
