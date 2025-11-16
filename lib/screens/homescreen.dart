@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/background.dart';
+import 'modulegridscreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -187,75 +188,86 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Stack(
                       children: [
                         // Colored card background
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 33,
-                            vertical: 12,
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  modules[index]['gradientStart'],
-                                  modules[index]['gradientEnd'],
+                        GestureDetector(
+                          onTap: () {
+                            context.push(
+                              '/module-subsections',
+                              extra: {
+                                'moduleNumber': modules[index]['number'],
+                                'moduleName': modules[index]['title'],
+                              },
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 33,
+                              vertical: 12,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    modules[index]['gradientStart'],
+                                    modules[index]['gradientEnd'],
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(28),
+                                border: Border.all(color: Colors.white, width: 2),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.15),
+                                    blurRadius: 60,
+                                    offset: const Offset(0, 20),
+                                    spreadRadius: 0,
+                                  ),
                                 ],
                               ),
-                              borderRadius: BorderRadius.circular(28),
-                              border: Border.all(color: Colors.white, width: 2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.15),
-                                  blurRadius: 60,
-                                  offset: const Offset(0, 20),
-                                  spreadRadius: 0,
-                                ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.all(50),
-                            child: Column(
-                              children: [
-                                // Title
-                                Text(
-                                  modules[index]['title'],
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xFF2C3E50),
+                              padding: const EdgeInsets.all(50),
+                              child: Column(
+                                children: [
+                                  // Title
+                                  Text(
+                                    modules[index]['title'],
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF2C3E50),
+                                    ),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 10),
-                                // Subtitle
-                                const Text(
-                                  'Tap to explore',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xFF6B7280),
+                                  const SizedBox(height: 10),
+                                  // Subtitle
+                                  const Text(
+                                    'Tap to explore',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xFF6B7280),
+                                    ),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 35),
-                                // White content box
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.15),
-                                          blurRadius: 60,
-                                          offset: const Offset(0, 20),
-                                          spreadRadius: 0,
-                                        ),
-                                      ],
+                                  const SizedBox(height: 35),
+                                  // White content box
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFFFFFFF),
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.15),
+                                            blurRadius: 60,
+                                            offset: const Offset(0, 20),
+                                            spreadRadius: 0,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -414,7 +426,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(width: 16),
                     // Modules/Apps button
                     GestureDetector(
-                      onTap: () => context.go('/modules-grid'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ModulesGridScreen(),
+                          ),
+                        );
+                      },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -429,15 +448,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(width: 16),
                     // Bookmark button
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      child: Icon(
-                        Icons.bookmark,
-                        color: Colors.grey[400],
-                        size: 26,
+                    GestureDetector(
+                      onTap: () => context.go('/bookmarks'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Icon(
+                          Icons.bookmark,
+                          color: Colors.grey[400],
+                          size: 26,
+                        ),
                       ),
                     ),
                   ],
