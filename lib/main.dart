@@ -5,6 +5,7 @@ import 'screens/loginscreen.dart';
 import 'screens/signupscreen.dart';
 import 'screens/homescreen.dart';
 import 'screens/modulegridscreen.dart';
+import 'screens/bookmarkscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -111,6 +112,25 @@ final GoRouter _router = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const ModulesGridScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 600),
+      ),
+    ),
+    GoRoute(
+      path: '/bookmarks',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const BookmarksScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
             opacity: animation,

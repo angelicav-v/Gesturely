@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   modules[index]['title'],
                                   style: const TextStyle(
                                     fontSize: 20,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w600,
                                     color: Color(0xFF2C3E50),
                                   ),
                                   textAlign: TextAlign.center,
@@ -429,15 +429,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(width: 16),
                     // Bookmark button
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      child: Icon(
-                        Icons.bookmark,
-                        color: Colors.grey[400],
-                        size: 26,
+                    GestureDetector(
+                      onTap: () => context.go('/bookmarks'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Icon(
+                          Icons.bookmark,
+                          color: Colors.grey[400],
+                          size: 26,
+                        ),
                       ),
                     ),
                   ],

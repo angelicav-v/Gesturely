@@ -309,15 +309,18 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                     ),
                     const SizedBox(width: 16),
                     // Bookmark button
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      child: Icon(
-                        Icons.bookmark,
-                        color: Colors.grey[400],
-                        size: 26,
+                    GestureDetector(
+                      onTap: () => context.go('/bookmarks'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Icon(
+                          Icons.bookmark,
+                          color: Colors.grey[400],
+                          size: 26,
+                        ),
                       ),
                     ),
                   ],
