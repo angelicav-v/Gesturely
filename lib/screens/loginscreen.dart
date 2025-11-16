@@ -49,9 +49,7 @@ class _LoginScreenState extends State<LoginScreen>
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
         setState(() => _isSigningIn = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Sign in successful!')));
+        context.go('/home');
       }
     });
   }
