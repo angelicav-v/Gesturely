@@ -152,7 +152,17 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                         ),
                     itemCount: modules.length,
                     itemBuilder: (context, index) {
-                      return Container(
+                      return GestureDetector(
+                        onTap: () {
+                          context.push(
+                            '/module-subsections',
+                            extra: {
+                              'moduleNumber': modules[index]['number'],
+                              'moduleName': modules[index]['title'],
+                            },
+                          );
+                        },
+                        child: Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
@@ -238,6 +248,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                             ),
                           ],
                         ),
+                        )
                       );
                     },
                   ),

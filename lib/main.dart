@@ -4,8 +4,9 @@ import 'screens/loadingscreen.dart';
 import 'screens/loginscreen.dart';
 import 'screens/signupscreen.dart';
 import 'screens/homescreen.dart';
-import 'screens/modulegridscreen.dart';
 import 'screens/bookmarkscreen.dart';
+import 'screens/modulesubsectionsscreen.dart';
+import 'screens/flashcardscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -108,23 +109,30 @@ final GoRouter _router = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/modules-grid',
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const ModulesGridScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: ScaleTransition(
-              scale: Tween<double>(begin: 0.95, end: 1.0).animate(
-                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+      path: '/module/:moduleNumber',
+      pageBuilder: (context, state) {
+        final moduleNumber = int.parse(state.pathParameters['moduleNumber'] ?? '1');
+        final moduleName = _getModuleName(moduleNumber);
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ModuleSubsectionsScreen(
+            moduleNumber: moduleNumber,
+            moduleName: moduleName,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                ),
+                child: child,
               ),
-              child: child,
-            ),
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 600),
-      ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 600),
+        );
+      },
     ),
     GoRoute(
       path: '/bookmarks',
@@ -145,5 +153,73 @@ final GoRouter _router = GoRouter(
         transitionDuration: const Duration(milliseconds: 600),
       ),
     ),
+    GoRoute(
+      path: '/module-subsections',
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ModuleSubsectionsScreen(
+            moduleNumber: extra['moduleNumber'],
+            moduleName: extra['moduleName'],
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                ),
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 600),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/flashcards',
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: FlashcardScreen(
+            moduleNumber: extra['moduleNumber'],
+            subsectionNumber: extra['subsectionNumber'],
+            subsectionTitle: extra['subsectionTitle'],
+            cardCount: extra['cardCount'],
+            cards: extra['cards'] ?? [],
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                ),
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 600),
+        );
+      },
+    ),
   ],
 );
+
+String _getModuleName(int moduleNumber) {
+  switch (moduleNumber) {
+    case 1:
+      return 'Greetings & Introductions';
+    case 2:
+      return 'Places & Directions';
+    case 3:
+      return 'Alphabet & Numbers';
+    case 4:
+      return 'Emotions & People';
+    default:
+      return 'Module $moduleNumber';
+  }
+}

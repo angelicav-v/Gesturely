@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/background.dart';
+import 'flashcardscreen.dart' show BookmarksTracker;
+import 'modulegridscreen.dart';
 
 class BookmarksScreen extends StatefulWidget {
   const BookmarksScreen({Key? key}) : super(key: key);
@@ -10,12 +12,9 @@ class BookmarksScreen extends StatefulWidget {
 }
 
 class _BookmarksScreenState extends State<BookmarksScreen> {
-  // Sample bookmarked flashcards - in a real app, this would come from a database
-  // Will be populated when users bookmark flashcards from modules
-  final List<Map<String, dynamic>> bookmarkedCards = [];
-
   @override
   Widget build(BuildContext context) {
+    final bookmarkedCards = BookmarksTracker.getBookmarks();
     bool hasBookmarks = bookmarkedCards.isNotEmpty;
 
     return GesturelyBackground(
@@ -202,11 +201,22 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                             ],
                                           ),
                                         ),
-                                        // Bookmark icon
-                                        Icon(
-                                          Icons.bookmark,
-                                          color: const Color(0xFF2563EB),
-                                          size: 24,
+                                        // Bookmark icon - clickable to remove
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              BookmarksTracker.removeBookmark(
+                                                card['moduleNumber'],
+                                                card['subsectionNumber'],
+                                                card['title'],
+                                              );
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.bookmark,
+                                            color: const Color(0xFF2563EB),
+                                            size: 24,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -296,7 +306,14 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                     const SizedBox(width: 16),
                     // Modules/Apps button
                     GestureDetector(
-                      onTap: () => context.go('/modules-grid'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ModulesGridScreen(),
+                          ),
+                        );
+                      },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
