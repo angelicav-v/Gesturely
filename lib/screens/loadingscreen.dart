@@ -59,11 +59,11 @@ class _LoadingScreenState extends State<LoadingScreen>
 
     _textSlide = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero)
         .animate(
-      CurvedAnimation(
-        parent: _textController,
-        curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
-      ),
-    );
+          CurvedAnimation(
+            parent: _textController,
+            curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
+          ),
+        );
 
     // Indicator animation
     _indicatorController = AnimationController(
@@ -103,40 +103,26 @@ class _LoadingScreenState extends State<LoadingScreen>
           child: Column(
             children: [
               const Spacer(),
-              
+
               // Center content
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Animated hand icon
+                    // Animated logo
                     ScaleTransition(
                       scale: _iconScale,
                       child: FadeTransition(
                         opacity: _iconOpacity,
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(28),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.06),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.pan_tool_rounded,
-                            size: 48,
-                            color: const Color(0xFF2C3E50),
-                          ),
+                        child: Image.asset(
+                          'assets/images/gesturelylogo.png',
+                          width: 150,
+                          height: 150,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 5),
 
                     // Animated text with gradient
                     SlideTransition(
@@ -191,19 +177,22 @@ class _LoadingScreenState extends State<LoadingScreen>
                         (index) => AnimatedBuilder(
                           animation: _indicatorController,
                           builder: (context, child) {
-                            final scale = Tween<double>(begin: 1.0, end: 1.2).animate(
-                              CurvedAnimation(
-                                parent: _indicatorController,
-                                curve: Interval(
-                                  index * 0.15,
-                                  (index * 0.15) + 0.3,
-                                  curve: Curves.easeInOut,
-                                ),
-                              ),
-                            );
+                            final scale = Tween<double>(begin: 1.0, end: 1.2)
+                                .animate(
+                                  CurvedAnimation(
+                                    parent: _indicatorController,
+                                    curve: Interval(
+                                      index * 0.15,
+                                      (index * 0.15) + 0.3,
+                                      curve: Curves.easeInOut,
+                                    ),
+                                  ),
+                                );
 
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                              ),
                               child: ScaleTransition(
                                 scale: scale,
                                 child: Container(

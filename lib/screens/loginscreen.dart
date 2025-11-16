@@ -67,28 +67,14 @@ class _LoginScreenState extends State<LoginScreen>
                 children: [
                   const SizedBox(height: 100),
 
-                  // Header icon - small
-                  Container(
-                    padding: const EdgeInsets.all(35),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.06),
-                          blurRadius: 12,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.pan_tool_rounded,
-                      size: 24,
-                      color: const Color(0xFF2C3E50),
-                    ),
+                  // Official Gesturely Logo
+                  Image.asset(
+                    'assets/images/gesturelylogo.png',
+                    width: 140,
+                    height: 140,
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 3),
 
                   // Header text
                   const Text(
