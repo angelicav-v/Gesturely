@@ -5,7 +5,7 @@ import 'profilescreen.dart';
 import 'settingscreen.dart';
 
 class ModulesGridScreen extends StatefulWidget {
-  const ModulesGridScreen({Key? key}) : super(key: key);
+  const ModulesGridScreen({super.key});
 
   @override
   State<ModulesGridScreen> createState() => _ModulesGridScreenState();
@@ -16,6 +16,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
     {
       'number': 1,
       'title': 'Greetings & Introductions',
+      'image': 'assets/images/module1greetings.png',
       'gradientStart': Color(0xFFFFEDD4),
       'gradientEnd': Color(0xFFFFD6A7),
       'buttonColor': Color(0xFFFF9500),
@@ -23,6 +24,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
     {
       'number': 2,
       'title': 'Places & Directions',
+      'image': 'assets/images/module2directions.png',
       'gradientStart': Color(0xFFFFE4E6),
       'gradientEnd': Color(0xFFFCCEE8),
       'buttonColor': Color(0xFFFF69B4),
@@ -30,6 +32,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
     {
       'number': 3,
       'title': 'Alphabet & Numbers',
+      'image': 'assets/images/module3alphabets.png',
       'gradientStart': Color(0xFFF3E8FF),
       'gradientEnd': Color(0xFFDDD6FF),
       'buttonColor': Color(0xFFBB86FC),
@@ -37,6 +40,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
     {
       'number': 4,
       'title': 'Emotions & People',
+      'image': 'assets/images/module4emotions.png',
       'gradientStart': Color(0xFFCBFBF1),
       'gradientEnd': Color(0xFFA2F4FD),
       'buttonColor': Color(0xFF00BCD4),
@@ -185,92 +189,114 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                           );
                         },
                         child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              modules[index]['gradientStart'],
-                              modules[index]['gradientEnd'],
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                modules[index]['gradientStart'],
+                                modules[index]['gradientEnd'],
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(color: Colors.white, width: 2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.15),
+                                blurRadius: 60,
+                                offset: const Offset(0, 20),
+                                spreadRadius: 0,
+                              ),
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: Colors.white, width: 2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 60,
-                              offset: const Offset(0, 20),
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            // Module button
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: modules[index]['buttonColor'],
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: modules[index]['buttonColor']
-                                        .withOpacity(0.3),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Text(
-                                'Module ${modules[index]['number']}',
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              // Module button
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 8,
                                 ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 11),
-
-                            // White content box
-                            Expanded(
-                              child: Container(
                                 decoration: BoxDecoration(
-                                  color: Color(0xFFFFFFFF),
-                                  borderRadius: BorderRadius.circular(16),
+                                  color: modules[index]['buttonColor'],
+                                  borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.15),
-                                      blurRadius: 60,
-                                      offset: const Offset(0, 20),
-                                      spreadRadius: 0,
+                                      color: modules[index]['buttonColor']
+                                          .withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
+                                child: Text(
+                                  'Module ${modules[index]['number']}',
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
-                            ),
 
-                            const SizedBox(height: 12),
+                              const SizedBox(height: 11),
 
-                            // Module title
-                            Text(
-                              modules[index]['title'],
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xFF2C3E50),
+                              // White content box with module image
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFFFFFFF),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.15),
+                                        blurRadius: 60,
+                                        offset: const Offset(0, 20),
+                                        spreadRadius: 0,
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image.asset(
+                                      modules[index]['image'],
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                            return Container(
+                                              color: Colors.red,
+                                              child: Center(
+                                                child: Text(
+                                                  'Error: $error',
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                    ),
+                                  ),
+                                ),
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+
+                              const SizedBox(height: 12),
+
+                              // Module title
+                              Text(
+                                modules[index]['title'],
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xFF2C3E50),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
-                        )
                       );
                     },
                   ),
@@ -334,11 +360,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                         ),
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child: Icon(
-                        Icons.apps,
-                        color: Colors.white,
-                        size: 26,
-                      ),
+                      child: Icon(Icons.apps, color: Colors.white, size: 26),
                     ),
                     const SizedBox(width: 16),
                     // Bookmark button

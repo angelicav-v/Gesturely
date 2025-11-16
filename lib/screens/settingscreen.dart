@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/background.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -148,7 +148,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     _pushNotifications = value;
                                   });
                                 },
-                                activeColor: const Color(0xFF2C3E50),
+                                activeThumbColor: const Color(0xFF2C3E50),
                                 inactiveThumbColor: Colors.grey[300],
                               ),
                             ),
@@ -193,7 +193,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     _soundEffects = value;
                                   });
                                 },
-                                activeColor: const Color(0xFF2C3E50),
+                                activeThumbColor: const Color(0xFF2C3E50),
                                 inactiveThumbColor: Colors.grey[300],
                               ),
                             ),

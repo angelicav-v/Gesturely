@@ -107,13 +107,13 @@ class FlashcardScreen extends StatefulWidget {
   final List<String> cards;
 
   const FlashcardScreen({
-    Key? key,
+    super.key,
     required this.moduleNumber,
     required this.subsectionNumber,
     required this.subsectionTitle,
     required this.cardCount,
     this.cards = const [],
-  }) : super(key: key);
+  });
 
   @override
   State<FlashcardScreen> createState() => _FlashcardScreenState();
@@ -126,7 +126,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
   int _currentCard = 0;
   int _maxCardViewed = 0;
   bool _isFlipped = false;
-  Set<int> _bookmarkedCards = {};
+  final Set<int> _bookmarkedCards = {};
 
   final List<Map<String, String>> _cardTemplates = [
     {'front': 'Hello', 'back': 'Hello'},

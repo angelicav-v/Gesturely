@@ -7,10 +7,10 @@ class ProfileScreen extends StatefulWidget {
   final String? userEmail;
 
   const ProfileScreen({
-    Key? key,
+    super.key,
     this.userName = 'Sarah Johnson',
     this.userEmail = 'sarah.j@email.com',
-  }) : super(key: key);
+  });
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       int total = 0;
       for (int i = 1; i <= 4; i++) {
         for (int j = 1; j <= 2; j++) {
-          final key = '${i}_${j}';
+          final key = '${i}_$j';
           final progress = ProgressTracker.getProgress(key);
           if (progress > 0) {
             // Estimate cards learned based on module
