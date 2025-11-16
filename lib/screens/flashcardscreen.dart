@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:video_player/video_player.dart';
 import '../widgets/background.dart';
 import 'subsectionwordlistscreen.dart';
 import 'settingscreen.dart';
@@ -127,6 +128,8 @@ class _FlashcardScreenState extends State<FlashcardScreen>
   int _maxCardViewed = 0;
   bool _isFlipped = false;
   Set<int> _bookmarkedCards = {};
+  VideoPlayerController? _videoController;
+  bool _isVideoInitialized = false;
 
   final List<Map<String, String>> _cardTemplates = [
     {'front': 'Hello', 'back': 'Hello'},
@@ -152,6 +155,40 @@ class _FlashcardScreenState extends State<FlashcardScreen>
       vsync: this,
     );
     _generateFlashcards();
+    _initializeVideoForFirstCard();
+  }
+
+  void _initializeVideoForFirstCard() {
+    // Check if this is Module 1, Subsection 1, and card is "I don't know"
+    if (widget.moduleNumber == 1 && 
+        widget.subsectionNumber == 1 && 
+        flashcards.isNotEmpty && 
+        flashcards[0]['front'] == "I don't know") {
+      _initializeVideo();
+    }
+  }
+
+  void _initializeVideo() {
+    // Use asset video - make sure to add this to pubspec.yaml
+    _videoController = VideoPlayerController.asset('assets/videos/i_dont_know.mp4');
+    _videoController!.initialize().then((_) {
+      if (mounted) {
+        setState(() {
+          _isVideoInitialized = true;
+        });
+        _videoController!.setLooping(true);
+      }
+    }).catchError((error) {
+      print('Error initializing video: $error');
+    });
+  }
+
+  bool _shouldShowVideo(int cardIndex) {
+    // Only show video for the first card if it's "I don't know"
+    return widget.moduleNumber == 1 && 
+           widget.subsectionNumber == 1 && 
+           cardIndex == 0 &&
+           flashcards[cardIndex]['front'] == "I don't know";
   }
 
   void _generateFlashcards() {
@@ -430,6 +467,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
   void dispose() {
     _pageController.dispose();
     _flipController.dispose();
+    _videoController?.dispose();
     super.dispose();
   }
 
@@ -603,6 +641,169 @@ class _FlashcardScreenState extends State<FlashcardScreen>
         );
       },
     );
+  }
+
+  Widget _buildCardBack(int index) {
+    final showVideo = _shouldShowVideo(index);
+    
+    if (showVideo && _isVideoInitialized && _videoController != null) {
+      return Expanded(
+        child: Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()..rotateY(3.14159),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Spacer(),
+              // Video player
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: AspectRatio(
+                  aspectRatio: _videoController!.value.aspectRatio,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      VideoPlayer(_videoController!),
+                      // Play/Pause overlay
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (_videoController!.value.isPlaying) {
+                              _videoController!.pause();
+                            } else {
+                              _videoController!.play();
+                            }
+                          });
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Center(
+                            child: Icon(
+                              _videoController!.value.isPlaying 
+                                  ? Icons.pause_circle_outline 
+                                  : Icons.play_circle_outline,
+                              size: 64,
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'ASL Sign Video',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF9CA3AF),
+                ),
+              ),
+              const Spacer(),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color(0xFFFF8904),
+                      Color(0xFFFF637E),
+                      Color(0xFFFB64B6),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '"${flashcards[index]['back'] ?? ''}"',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      // Original card back without video
+      return Expanded(
+        child: Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()..rotateY(3.14159),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Spacer(),
+              Column(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Icon(
+                      Icons.image,
+                      color: Colors.grey[300],
+                      size: 40,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'ASL Sign',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF9CA3AF),
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color(0xFFFF8904),
+                      Color(0xFFFF637E),
+                      Color(0xFFFB64B6),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '"${flashcards[index]['back'] ?? ''}"',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -797,6 +998,11 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                       }
                       _isFlipped = false;
                       _flipController.reset();
+                      
+                      // Pause video when leaving the "I don't know" card
+                      if (_videoController != null && _videoController!.value.isPlaying) {
+                        _videoController!.pause();
+                      }
                     });
                   },
                   itemCount: widget.cardCount,
@@ -807,8 +1013,16 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                         onTap: () {
                           if (_isFlipped) {
                             _flipController.reverse();
+                            // Pause video when flipping back
+                            if (_shouldShowVideo(index) && _videoController != null) {
+                              _videoController!.pause();
+                            }
                           } else {
                             _flipController.forward();
+                            // Auto-play video when card flips to back
+                            if (_shouldShowVideo(index) && _videoController != null && _isVideoInitialized) {
+                              _videoController!.play();
+                            }
                           }
                           setState(() {
                             _isFlipped = !_isFlipped;
@@ -879,84 +1093,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                                         ),
                                       )
                                     else
-                                      Expanded(
-                                        child: Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.identity()
-                                            ..rotateY(3.14159),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Spacer(),
-                                              Column(
-                                                children: [
-                                                  Container(
-                                                    width: 80,
-                                                    height: 80,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.grey[100],
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            16,
-                                                          ),
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.image,
-                                                      color: Colors.grey[300],
-                                                      size: 40,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 12),
-                                                  const Text(
-                                                    'ASL Sign',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Color(0xFF9CA3AF),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const Spacer(),
-                                              Container(
-                                                width: double.infinity,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 16,
-                                                    ),
-                                                decoration: BoxDecoration(
-                                                  gradient:
-                                                      const LinearGradient(
-                                                        begin: Alignment
-                                                            .centerLeft,
-                                                        end: Alignment
-                                                            .centerRight,
-                                                        colors: [
-                                                          Color(0xFFFF8904),
-                                                          Color(0xFFFF637E),
-                                                          Color(0xFFFB64B6),
-                                                        ],
-                                                      ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                child: Text(
-                                                  '"${flashcards[index]['back'] ?? ''}"',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.white,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                      _buildCardBack(index),
                                   ],
                                 ),
                               ),
