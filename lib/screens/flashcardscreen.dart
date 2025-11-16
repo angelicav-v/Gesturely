@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/background.dart';
 import 'subsectionwordlistscreen.dart';
+import 'settingscreen.dart';
 
 // Global progress tracker
 class ProgressTracker {
@@ -24,8 +25,13 @@ class ProgressTracker {
 class BookmarksTracker {
   static final List<Map<String, dynamic>> _bookmarks = [];
 
-  static void addBookmark(int moduleNumber, int subsectionNumber, 
-      String cardTitle, String moduleName, int subsectionCardCount) {
+  static void addBookmark(
+    int moduleNumber,
+    int subsectionNumber,
+    String cardTitle,
+    String moduleName,
+    int subsectionCardCount,
+  ) {
     final bookmark = {
       'moduleNumber': moduleNumber,
       'subsectionNumber': subsectionNumber,
@@ -34,33 +40,47 @@ class BookmarksTracker {
       'subsection': 'Subsection $subsectionNumber',
       'moduleColor': _getModuleColor(moduleNumber),
     };
-    
-    final exists = _bookmarks.any((b) =>
-        b['moduleNumber'] == moduleNumber &&
-        b['subsectionNumber'] == subsectionNumber &&
-        b['title'] == cardTitle);
-    
+
+    final exists = _bookmarks.any(
+      (b) =>
+          b['moduleNumber'] == moduleNumber &&
+          b['subsectionNumber'] == subsectionNumber &&
+          b['title'] == cardTitle,
+    );
+
     if (!exists) {
       _bookmarks.add(bookmark);
     }
   }
 
-  static void removeBookmark(int moduleNumber, int subsectionNumber, String cardTitle) {
-    _bookmarks.removeWhere((b) =>
-        b['moduleNumber'] == moduleNumber &&
-        b['subsectionNumber'] == subsectionNumber &&
-        b['title'] == cardTitle);
+  static void removeBookmark(
+    int moduleNumber,
+    int subsectionNumber,
+    String cardTitle,
+  ) {
+    _bookmarks.removeWhere(
+      (b) =>
+          b['moduleNumber'] == moduleNumber &&
+          b['subsectionNumber'] == subsectionNumber &&
+          b['title'] == cardTitle,
+    );
   }
 
   static List<Map<String, dynamic>> getBookmarks() {
     return _bookmarks;
   }
 
-  static bool isBookmarked(int moduleNumber, int subsectionNumber, String cardTitle) {
-    return _bookmarks.any((b) =>
-        b['moduleNumber'] == moduleNumber &&
-        b['subsectionNumber'] == subsectionNumber &&
-        b['title'] == cardTitle);
+  static bool isBookmarked(
+    int moduleNumber,
+    int subsectionNumber,
+    String cardTitle,
+  ) {
+    return _bookmarks.any(
+      (b) =>
+          b['moduleNumber'] == moduleNumber &&
+          b['subsectionNumber'] == subsectionNumber &&
+          b['title'] == cardTitle,
+    );
   }
 
   static Color _getModuleColor(int moduleNumber) {
@@ -137,13 +157,10 @@ class _FlashcardScreenState extends State<FlashcardScreen>
   void _generateFlashcards() {
     flashcards = [];
     List<String> cardsToUse = _getCardsByModuleAndSubsection();
-    
+
     if (cardsToUse.isNotEmpty) {
       for (final card in cardsToUse) {
-        flashcards.add({
-          'front': card,
-          'back': card,
-        });
+        flashcards.add({'front': card, 'back': card});
       }
     } else {
       for (int i = 0; i < widget.cardCount; i++) {
@@ -193,15 +210,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
         break;
       case 2:
         if (widget.subsectionNumber == 1) {
-          return [
-            'Left',
-            'North',
-            'South',
-            'East',
-            'West',
-            'Right',
-            'Where',
-          ];
+          return ['Left', 'North', 'South', 'East', 'West', 'Right', 'Where'];
         }
         break;
       case 3:
@@ -209,22 +218,38 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           return ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
         } else if (widget.subsectionNumber == 2) {
           return [
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z',
+            'A',
+            'B',
+            'C',
+            'D',
+            'E',
+            'F',
+            'G',
+            'H',
+            'I',
+            'J',
+            'K',
+            'L',
+            'M',
+            'N',
+            'O',
+            'P',
+            'Q',
+            'R',
+            'S',
+            'T',
+            'U',
+            'V',
+            'W',
+            'X',
+            'Y',
+            'Z',
           ];
         }
         break;
       case 4:
         if (widget.subsectionNumber == 1) {
-          return [
-            'Surprised',
-            'Hungry',
-            'Tired',
-            'Angry',
-            'Worried',
-            'Happy',
-          ];
+          return ['Surprised', 'Hungry', 'Tired', 'Angry', 'Worried', 'Happy'];
         } else if (widget.subsectionNumber == 2) {
           return [
             'Sister (pt.1)',
@@ -299,15 +324,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           'number': 1,
           'title': 'Directions',
           'cardCount': 7,
-          'cards': [
-            'Left',
-            'North',
-            'South',
-            'East',
-            'West',
-            'Right',
-            'Where',
-          ],
+          'cards': ['Left', 'North', 'South', 'East', 'West', 'Right', 'Where'],
         },
       ],
       3: [
@@ -315,18 +332,39 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           'number': 1,
           'title': 'Numbers 1-10',
           'cardCount': 10,
-          'cards': [
-            '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-          ],
+          'cards': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
         },
         {
           'number': 2,
           'title': "ABC's",
           'cardCount': 26,
           'cards': [
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z',
+            'A',
+            'B',
+            'C',
+            'D',
+            'E',
+            'F',
+            'G',
+            'H',
+            'I',
+            'J',
+            'K',
+            'L',
+            'M',
+            'N',
+            'O',
+            'P',
+            'Q',
+            'R',
+            'S',
+            'T',
+            'U',
+            'V',
+            'W',
+            'X',
+            'Y',
+            'Z',
           ],
         },
       ],
@@ -374,12 +412,13 @@ class _FlashcardScreenState extends State<FlashcardScreen>
 
     final moduleSubsections = subsectionsByModule[widget.moduleNumber] ?? [];
     final currentIndex = moduleSubsections.indexWhere(
-        (s) => s['number'] == widget.subsectionNumber);
-    
+      (s) => s['number'] == widget.subsectionNumber,
+    );
+
     if (currentIndex >= 0 && currentIndex < moduleSubsections.length - 1) {
       return moduleSubsections[currentIndex + 1];
     }
-    
+
     return null;
   }
 
@@ -425,10 +464,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const Text(
-                        '⭐',
-                        style: TextStyle(fontSize: 20),
-                      ),
+                      const Text('⭐', style: TextStyle(fontSize: 20)),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -501,7 +537,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                           final progressKey =
                               '${widget.moduleNumber}_${widget.subsectionNumber}';
                           ProgressTracker.setProgress(progressKey, 1.0);
-                          
+
                           final nextSubsection = _getNextSubsection();
                           if (nextSubsection != null) {
                             Navigator.pop(context);
@@ -632,7 +668,12 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                     // Settings button
                     GestureDetector(
                       onTap: () {
-                        // Settings action
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SettingsScreen(),
+                          ),
+                        );
                       },
                       child: Container(
                         width: 40,
@@ -667,21 +708,24 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                     onTap: () {
                       setState(() {
                         if (BookmarksTracker.isBookmarked(
+                          widget.moduleNumber,
+                          widget.subsectionNumber,
+                          flashcards[_currentCard]['front'] ?? '',
+                        )) {
+                          BookmarksTracker.removeBookmark(
                             widget.moduleNumber,
                             widget.subsectionNumber,
-                            flashcards[_currentCard]['front'] ?? '')) {
-                          BookmarksTracker.removeBookmark(
-                              widget.moduleNumber,
-                              widget.subsectionNumber,
-                              flashcards[_currentCard]['front'] ?? '');
+                            flashcards[_currentCard]['front'] ?? '',
+                          );
                           _bookmarkedCards.remove(_currentCard);
                         } else {
                           BookmarksTracker.addBookmark(
-                              widget.moduleNumber,
-                              widget.subsectionNumber,
-                              flashcards[_currentCard]['front'] ?? '',
-                              'Module ${widget.moduleNumber}',
-                              widget.cardCount);
+                            widget.moduleNumber,
+                            widget.subsectionNumber,
+                            flashcards[_currentCard]['front'] ?? '',
+                            'Module ${widget.moduleNumber}',
+                            widget.cardCount,
+                          );
                           _bookmarkedCards.add(_currentCard);
                         }
                       });
@@ -744,6 +788,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
+                  clipBehavior: Clip.hardEdge,
                   onPageChanged: (index) {
                     setState(() {
                       _currentCard = index;
@@ -960,18 +1005,21 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                         ),
                       ),
                     ),
-                    Row(
-                      children: List.generate(
-                        widget.cardCount,
-                        (index) => Container(
-                          width: index == _currentCard ? 24 : 6,
-                          height: 6,
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          decoration: BoxDecoration(
-                            color: index == _currentCard
-                                ? const Color(0xFF2C3E50)
-                                : const Color.fromARGB(255, 165, 159, 159),
-                            borderRadius: BorderRadius.circular(3),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          widget.cardCount,
+                          (index) => Container(
+                            width: index == _currentCard ? 12 : 3,
+                            height: 6,
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            decoration: BoxDecoration(
+                              color: index == _currentCard
+                                  ? const Color(0xFF2C3E50)
+                                  : const Color.fromARGB(255, 165, 159, 159),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
                           ),
                         ),
                       ),
