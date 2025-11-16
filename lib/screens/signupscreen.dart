@@ -56,9 +56,7 @@ class _SignupScreenState extends State<SignupScreen>
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
         setState(() => _isSigningUp = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully!')),
-        );
+        context.go('/home');
       }
     });
   }
@@ -420,7 +418,8 @@ class _SignupScreenState extends State<SignupScreen>
                                     vertical: 12,
                                   ),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
                                     children: [
                                       if (_isSigningUp)
                                         SizedBox(
@@ -429,7 +428,9 @@ class _SignupScreenState extends State<SignupScreen>
                                           child: CircularProgressIndicator(
                                             valueColor:
                                                 AlwaysStoppedAnimation<Color>(
-                                                  Colors.white.withOpacity(0.9),
+                                                  Colors.white.withOpacity(
+                                                    0.9,
+                                                  ),
                                                 ),
                                             strokeWidth: 2.5,
                                           ),
@@ -487,7 +488,7 @@ class _SignupScreenState extends State<SignupScreen>
                       borderRadius: BorderRadius.circular(28),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 2,
+                          horizontal: 20,
                           vertical: 12,
                         ),
                         child: Row(
