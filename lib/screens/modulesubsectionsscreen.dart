@@ -10,10 +10,10 @@ class ModuleSubsectionsScreen extends StatefulWidget {
   final String moduleName;
 
   const ModuleSubsectionsScreen({
-    Key? key,
+    super.key,
     required this.moduleNumber,
     required this.moduleName,
-  }) : super(key: key);
+  });
 
   @override
   State<ModuleSubsectionsScreen> createState() =>

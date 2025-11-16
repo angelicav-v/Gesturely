@@ -9,12 +9,12 @@ class SubsectionWordsListScreen extends StatefulWidget {
   final List<String> cards;
 
   const SubsectionWordsListScreen({
-    Key? key,
+    super.key,
     required this.moduleNumber,
     required this.subsectionNumber,
     required this.subsectionTitle,
     required this.cards,
-  }) : super(key: key);
+  });
 
   @override
   State<SubsectionWordsListScreen> createState() =>

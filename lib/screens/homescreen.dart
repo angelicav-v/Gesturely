@@ -6,7 +6,7 @@ import 'profilescreen.dart';
 import 'settingscreen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'number': 1,
       'title': 'Greetings & Introductions',
+      'image': 'assets/images/module1greetings.png',
       'gradientStart': Color(0xFFFFEDD4),
       'gradientEnd': Color(0xFFFFD6A7),
       'buttonColor': Color(0xFFFF9500),
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'number': 2,
       'title': 'Places & Directions',
+      'image': 'assets/images/module2directions.png',
       'gradientStart': Color(0xFFFFE4E6),
       'gradientEnd': Color(0xFFFCCEE8),
       'buttonColor': Color(0xFFFF69B4),
@@ -34,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'number': 3,
       'title': 'Alphabet & Numbers',
+      'image': 'assets/images/module3alphabets.png',
       'gradientStart': Color(0xFFF3E8FF),
       'gradientEnd': Color(0xFFDDD6FF),
       'buttonColor': Color(0xFFBB86FC),
@@ -41,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'number': 4,
       'title': 'Emotions & People',
+      'image': 'assets/images/module4emotions.png',
       'gradientStart': Color(0xFFCBFBF1),
       'gradientEnd': Color(0xFFA2F4FD),
       'buttonColor': Color(0xFF00BCD4),
@@ -236,7 +240,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(28),
-                                border: Border.all(color: Colors.white, width: 2),
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.15),
@@ -271,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(height: 35),
-                                  // White content box
+                                  // White content box with module image
                                   Expanded(
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -279,12 +286,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                         borderRadius: BorderRadius.circular(20),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacity(0.15),
+                                            color: Colors.black.withOpacity(
+                                              0.15,
+                                            ),
                                             blurRadius: 60,
                                             offset: const Offset(0, 20),
                                             spreadRadius: 0,
                                           ),
                                         ],
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Image.asset(
+                                          modules[index]['image'],
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                                return Container(
+                                                  color: Colors.red,
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Error: $error',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                        ),
                                       ),
                                     ),
                                   ),

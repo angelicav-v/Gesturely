@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../widgets/background.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
