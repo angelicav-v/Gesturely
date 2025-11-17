@@ -5,6 +5,13 @@ import 'flashcardscreen.dart' show ProgressTracker;
 import 'profilescreen.dart';
 import 'settingscreen.dart';
 
+// ============================================================================
+// SECTION 1: MODULE SUBSECTIONS SCREEN WIDGET SETUP
+// ============================================================================
+// Shows all subsections within a specific module.
+// Displays progress bars for each subsection.
+// Users can tap to start learning a subsection.
+
 class ModuleSubsectionsScreen extends StatefulWidget {
   final int moduleNumber;
   final String moduleName;
@@ -21,22 +28,45 @@ class ModuleSubsectionsScreen extends StatefulWidget {
 }
 
 class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
+  // ========================================================================
+  // SECTION 2: STATE VARIABLES
+  // ========================================================================
+  
+  // List of subsections for this module
   late List<Map<String, dynamic>> subsections;
 
+  // ========================================================================
+  // SECTION 3: LIFECYCLE METHODS
+  // ========================================================================
+  
   @override
   void initState() {
     super.initState();
+    // Get subsections for this module
     subsections = _getSubsections();
+    // Update progress display
     _updateProgress();
   }
 
   @override
   void didUpdateWidget(ModuleSubsectionsScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // If module changed, reload subsections
     subsections = _getSubsections();
     _updateProgress();
   }
 
+  // ========================================================================
+  // SECTION 4: DATA RETRIEVAL METHODS
+  // ========================================================================
+  
+  /// Get all subsections for this module
+  /// 
+  /// Returns different subsections based on moduleNumber:
+  /// - Module 1: Common Phrases, Greetings
+  /// - Module 2: Directions
+  /// - Module 3: Numbers, Alphabet
+  /// - Module 4: Emotions, People
   List<Map<String, dynamic>> _getSubsections() {
     switch (widget.moduleNumber) {
       case 1:
@@ -48,21 +78,9 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
             'progress': 0.0,
             'color': Color(0xFFFF69B4),
             'cards': [
-              "I don't know",
-              'Learn',
-              "You're welcome",
-              'Thank you',
-              'Please',
-              'Sorry',
-              'Yes',
-              'Why',
-              'No',
-              'Me too / Same',
-              'Always',
-              'Never',
-              'Wrong / Mistake',
-              'Idea',
-              'Know',
+              "I don't know", 'Learn', "You're welcome", 'Thank you', 'Please',
+              'Sorry', 'Yes', 'Why', 'No', 'Me too / Same', 'Always', 'Never',
+              'Wrong / Mistake', 'Idea', 'Know',
             ],
           },
           {
@@ -72,14 +90,8 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
             'progress': 0.0,
             'color': Color(0xFF3B82F6),
             'cards': [
-              'Goodnight',
-              'Goodmorning',
-              "Nice to meet you",
-              "What's up?",
-              'What is your name?',
-              'My name is …',
-              'Bye (pt.1)',
-              'Bye (pt.2)',
+              'Goodnight', 'Goodmorning', 'Nice to meet you', "What's up?",
+              'What is your name?', 'My name is …', 'Bye (pt.1)', 'Bye (pt.2)',
               'Hello',
             ],
           },
@@ -93,13 +105,7 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
             'progress': 0.0,
             'color': Color(0xFF10B981),
             'cards': [
-              'Left',
-              'North',
-              'South',
-              'East',
-              'West',
-              'Right',
-              'Where',
+              'Left', 'North', 'South', 'East', 'West', 'Right', 'Where',
             ],
           },
         ];
@@ -120,32 +126,8 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
             'progress': 0.0,
             'color': Color(0xFFF59E0B),
             'cards': [
-              'A',
-              'B',
-              'C',
-              'D',
-              'E',
-              'F',
-              'G',
-              'H',
-              'I',
-              'J',
-              'K',
-              'L',
-              'M',
-              'N',
-              'O',
-              'P',
-              'Q',
-              'R',
-              'S',
-              'T',
-              'U',
-              'V',
-              'W',
-              'X',
-              'Y',
-              'Z',
+              'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+              'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
             ],
           },
         ];
@@ -158,12 +140,7 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
             'progress': 0.0,
             'color': Color(0xFF10B981),
             'cards': [
-              'Surprised',
-              'Hungry',
-              'Tired',
-              'Angry',
-              'Worried',
-              'Happy',
+              'Surprised', 'Hungry', 'Tired', 'Angry', 'Worried', 'Happy',
             ],
           },
           {
@@ -173,24 +150,11 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
             'progress': 0.0,
             'color': Color(0xFFF59E0B),
             'cards': [
-              'Sister (pt.1)',
-              'Sister (pt.2)',
-              'Brother (pt.1)',
-              'Brother (pt.2)',
-              'Mother',
-              'Father',
-              'Grandma (pt.1)',
-              'Grandma (pt.2)',
-              'Grandpa (pt.1)',
-              'Grandpa (pt.2)',
-              'Girl (pt.1)',
-              'Girl (pt.2)',
-              'Boy (pt.1)',
-              'Boy (pt.2)',
-              'Woman (pt.1)',
-              'Woman (pt.2)',
-              'Man (pt.1)',
-              'Man (pt.2)',
+              'Sister (pt.1)', 'Sister (pt.2)', 'Brother (pt.1)', 'Brother (pt.2)',
+              'Mother', 'Father', 'Grandma (pt.1)', 'Grandma (pt.2)',
+              'Grandpa (pt.1)', 'Grandpa (pt.2)', 'Girl (pt.1)', 'Girl (pt.2)',
+              'Boy (pt.1)', 'Boy (pt.2)', 'Woman (pt.1)', 'Woman (pt.2)',
+              'Man (pt.1)', 'Man (pt.2)',
             ],
           },
         ];
@@ -199,6 +163,9 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
     }
   }
 
+  /// Update progress display for each subsection
+  /// 
+  /// Fetches progress from ProgressTracker and updates the UI
   void _updateProgress() {
     setState(() {
       for (var subsection in subsections) {
@@ -209,6 +176,10 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
     });
   }
 
+  // ========================================================================
+  // SECTION 5: UI BUILD METHOD
+  // ========================================================================
+  
   @override
   Widget build(BuildContext context) {
     return GesturelyBackground(
@@ -217,7 +188,10 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              // Top Header with Gesturely
+              // ================================================================
+              // SECTION 5.1: TOP HEADER BAR
+              // ================================================================
+              // Shows profile, app title, and settings icons
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -226,7 +200,7 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Profile icon
+                    // Profile icon button
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -257,7 +231,7 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
                         ),
                       ),
                     ),
-                    // Title with gradient
+                    // App title with gradient
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
                         begin: Alignment.centerLeft,
@@ -277,7 +251,7 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
                         ),
                       ),
                     ),
-                    // Settings icon
+                    // Settings icon button
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -314,7 +288,10 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
 
               const SizedBox(height: 16),
 
-              // Module Header
+              // ================================================================
+              // SECTION 5.2: MODULE HEADER
+              // ================================================================
+              // Shows back button and module name
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
@@ -361,19 +338,24 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
 
               const SizedBox(height: 63),
 
-              // Subsections list
+              // ================================================================
+              // SECTION 5.3: SUBSECTIONS LIST
+              // ================================================================
+              // ListView showing each subsection with progress bar
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   itemCount: subsections.length,
                   itemBuilder: (context, index) {
                     final subsection = subsections[index];
+                    // Convert progress to percentage
                     final progressPercent = (subsection['progress'] * 100)
                         .toStringAsFixed(0);
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: GestureDetector(
+                        // Navigate to flashcards for this subsection
                         onTap: () {
                           context.push(
                             '/flashcards',
@@ -402,11 +384,14 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Title and card count
+                              // ================================================
+                              // SECTION 5.3.1: SUBSECTION TITLE & CARD COUNT
+                              // ================================================
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
+                                  // Subsection title
                                   Expanded(
                                     child: Text(
                                       subsection['title'],
@@ -418,15 +403,15 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
                                     ),
                                   ),
                                   const SizedBox(width: 12),
+                                  // Card count badge
                                   Container(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 12,
                                       vertical: 6,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: subsection['color'].withOpacity(
-                                        0.1,
-                                      ),
+                                      color: subsection['color']
+                                          .withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Text(
@@ -441,7 +426,9 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
                                 ],
                               ),
                               const SizedBox(height: 12),
-                              // Progress label and percentage
+                              // ================================================
+                              // SECTION 5.3.2: PROGRESS LABEL & PERCENTAGE
+                              // ================================================
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -465,14 +452,16 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              // Progress bar
+                              // ================================================
+                              // SECTION 5.3.3: PROGRESS BAR
+                              // ================================================
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(4),
                                 child: LinearProgressIndicator(
                                   value: subsection['progress'],
                                   minHeight: 6,
-                                  backgroundColor: subsection['color']
-                                      .withOpacity(0.1),
+                                  backgroundColor:
+                                      subsection['color'].withOpacity(0.1),
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                     subsection['color'],
                                   ),
@@ -489,7 +478,10 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
 
               const SizedBox(height: 20),
 
-              // Bottom navigation
+              // ================================================================
+              // SECTION 5.4: BOTTOM NAVIGATION BAR
+              // ================================================================
+              // Two buttons: Layers (highlighted), Copy (quick start)
               Container(
                 margin: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -514,7 +506,7 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Layers icon - highlighted (current screen)
+                    // Layers icon (highlighted - current screen)
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 14,
@@ -535,7 +527,7 @@ class _ModuleSubsectionsScreenState extends State<ModuleSubsectionsScreen> {
                       child: Icon(Icons.layers, color: Colors.white, size: 24),
                     ),
                     const SizedBox(width: 8),
-                    // Copy icon - go to first flashcard
+                    // Copy icon - quick start first subsection
                     GestureDetector(
                       onTap: () {
                         if (subsections.isNotEmpty) {

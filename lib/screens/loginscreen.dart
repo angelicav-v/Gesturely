@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/background.dart';
 
+// ============================================================================
+// SECTION 1: LOGIN SCREEN WIDGET SETUP
+// ============================================================================
+// First screen users see. Allows existing users to sign in with email/password.
+// After successful login, navigates to home screen.
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -11,49 +17,91 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
+  // ========================================================================
+  // SECTION 2: FORM CONTROLLERS
+  // ========================================================================
+  // Text input controllers to manage user input
+  
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
+
+  // ========================================================================
+  // SECTION 3: ANIMATION CONTROLLERS
+  // ========================================================================
+  // Controls the fade-in animation of the form container
+  
   late AnimationController _containerController;
   late Animation<double> _containerOpacity;
+
+  // ========================================================================
+  // SECTION 4: UI STATE VARIABLES
+  // ========================================================================
+  
+  // Whether password field is hidden or visible
   bool _obscurePassword = true;
+  
+  // Whether sign in button is currently processing
   bool _isSigningIn = false;
 
+  // ========================================================================
+  // SECTION 5: LIFECYCLE METHODS
+  // ========================================================================
+  
   @override
   void initState() {
     super.initState();
+    // Initialize text controllers for form inputs
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
 
+    // Initialize animation controller for fade-in effect (800ms)
     _containerController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
+    // Create animation: fade in from 0.0 to 1.0
     _containerOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _containerController, curve: Curves.easeOutCubic),
     );
 
+    // Start the animation
     _containerController.forward();
   }
 
   @override
   void dispose() {
+    // Clean up controllers
     _emailController.dispose();
     _passwordController.dispose();
     _containerController.dispose();
     super.dispose();
   }
 
+  // ========================================================================
+  // SECTION 6: USER ACTION METHODS
+  // ========================================================================
+  
+  /// Handle sign in button tap
+  /// 
+  /// Shows loading animation, then navigates to home after delay
   void _handleSignIn() {
     setState(() => _isSigningIn = true);
+    
+    // Simulate sign in delay (1.5 seconds)
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
         setState(() => _isSigningIn = false);
+        // Navigate to home screen
         context.go('/home');
       }
     });
   }
 
+  // ========================================================================
+  // SECTION 7: UI BUILD METHOD
+  // ========================================================================
+  
   @override
   Widget build(BuildContext context) {
     return GesturelyBackground(
@@ -67,7 +115,9 @@ class _LoginScreenState extends State<LoginScreen>
                 children: [
                   const SizedBox(height: 100),
 
-                  // Official Gesturely Logo
+                  // ============================================================
+                  // SECTION 7.1: APP LOGO
+                  // ============================================================
                   Image.asset(
                     'assets/images/gesturelylogo.png',
                     width: 140,
@@ -76,7 +126,9 @@ class _LoginScreenState extends State<LoginScreen>
 
                   const SizedBox(height: 3),
 
-                  // Header text
+                  // ============================================================
+                  // SECTION 7.2: WELCOME TEXT
+                  // ============================================================
                   const Text(
                     'Welcome Back',
                     style: TextStyle(
@@ -97,7 +149,10 @@ class _LoginScreenState extends State<LoginScreen>
 
                   const SizedBox(height: 45),
 
-                  // Large white form container
+                  // ============================================================
+                  // SECTION 7.3: ANIMATED FORM CONTAINER
+                  // ============================================================
+                  // Form fades in on screen load
                   SlideTransition(
                     position: Tween<Offset>(
                       begin: const Offset(0, 0.3),
@@ -121,7 +176,9 @@ class _LoginScreenState extends State<LoginScreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Email field
+                            // ================================================
+                            // SECTION 7.3.1: EMAIL INPUT FIELD
+                            // ================================================
                             const Text(
                               'Email',
                               style: TextStyle(
@@ -175,7 +232,9 @@ class _LoginScreenState extends State<LoginScreen>
 
                             const SizedBox(height: 20),
 
-                            // Password field
+                            // ================================================
+                            // SECTION 7.3.2: PASSWORD INPUT FIELD
+                            // ================================================
                             const Text(
                               'Password',
                               style: TextStyle(
@@ -199,6 +258,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   color: Colors.grey[500],
                                   size: 18,
                                 ),
+                                // Visibility toggle button
                                 suffixIcon: GestureDetector(
                                   onTap: () {
                                     setState(() {
@@ -243,7 +303,9 @@ class _LoginScreenState extends State<LoginScreen>
 
                             const SizedBox(height: 16),
 
-                            // Forgot password link - gray, no color
+                            // ================================================
+                            // SECTION 7.3.3: FORGOT PASSWORD LINK
+                            // ================================================
                             Align(
                               alignment: Alignment.centerRight,
                               child: TextButton(
@@ -266,7 +328,10 @@ class _LoginScreenState extends State<LoginScreen>
 
                             const SizedBox(height: 24),
 
-                            // Sign In button with GRADIENT
+                            // ================================================
+                            // SECTION 7.3.4: SIGN IN BUTTON
+                            // ================================================
+                            // Gradient button with loading indicator
                             Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
@@ -302,6 +367,7 @@ class _LoginScreenState extends State<LoginScreen>
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
+                                        // Show spinner if loading
                                         if (_isSigningIn)
                                           SizedBox(
                                             width: 18,
@@ -325,6 +391,7 @@ class _LoginScreenState extends State<LoginScreen>
                                               color: Colors.white,
                                             ),
                                           ),
+                                        // Arrow icon next to text
                                         if (!_isSigningIn)
                                           const SizedBox(width: 8),
                                         if (!_isSigningIn)
@@ -347,7 +414,10 @@ class _LoginScreenState extends State<LoginScreen>
 
                   const SizedBox(height: 28),
 
-                  // Don't have account - pill button single line
+                  // ============================================================
+                  // SECTION 7.4: SIGN UP LINK
+                  // ============================================================
+                  // Navigates to signup screen if user doesn't have account
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,

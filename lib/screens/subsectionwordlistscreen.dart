@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import '../widgets/background.dart';
 import 'settingscreen.dart';
 
+// ============================================================================
+// SECTION 1: SUBSECTION WORDS LIST SCREEN WIDGET SETUP
+// ============================================================================
+// Displays all cards/words in a searchable list for a subsection.
+// Users can search, filter, and tap to jump to specific card.
+// This is an alternative navigation method to the carousel view.
+
 class SubsectionWordsListScreen extends StatefulWidget {
   final int moduleNumber;
   final int subsectionNumber;
@@ -22,21 +29,50 @@ class SubsectionWordsListScreen extends StatefulWidget {
 }
 
 class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
+  // ========================================================================
+  // SECTION 2: STATE VARIABLES
+  // ========================================================================
+  
+  // Controller for search input
   late TextEditingController _searchController;
+  
+  // Filtered list of cards based on search query
   List<String> _filteredCards = [];
 
+  // ========================================================================
+  // SECTION 3: LIFECYCLE METHODS
+  // ========================================================================
+  
   @override
   void initState() {
     super.initState();
+    // Initialize search controller
     _searchController = TextEditingController();
+    // Initially show all cards
     _filteredCards = widget.cards;
   }
 
+  @override
+  void dispose() {
+    // Clean up controller
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  // ========================================================================
+  // SECTION 4: SEARCH & FILTER METHODS
+  // ========================================================================
+  
+  /// Filter cards based on search query
+  /// 
+  /// Updates the display to show only cards matching the search text
   void _filterCards(String query) {
     setState(() {
       if (query.isEmpty) {
+        // Show all cards if search is empty
         _filteredCards = widget.cards;
       } else {
+        // Filter: only show cards containing search term (case-insensitive)
         _filteredCards = widget.cards
             .where((card) => card.toLowerCase().contains(query.toLowerCase()))
             .toList();
@@ -44,12 +80,10 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
+  // ========================================================================
+  // SECTION 5: UI BUILD METHOD
+  // ========================================================================
+  
   @override
   Widget build(BuildContext context) {
     return GesturelyBackground(
@@ -58,7 +92,9 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              // Header with back button
+              // ================================================================
+              // SECTION 5.1: HEADER WITH BACK & SETTINGS
+              // ================================================================
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -67,6 +103,7 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Back button with gradient
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
@@ -98,6 +135,7 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                         ),
                       ),
                     ),
+                    // Subsection title
                     Text(
                       widget.subsectionTitle,
                       style: const TextStyle(
@@ -106,7 +144,7 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                         color: Color(0xFF2C3E50),
                       ),
                     ),
-                    // Settings icon
+                    // Settings icon button
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -141,7 +179,11 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Search bar
+              
+              // ================================================================
+              // SECTION 5.2: SEARCH BAR
+              // ================================================================
+              // Allows users to search/filter words
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Container(
@@ -158,6 +200,7 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                   ),
                   child: TextField(
                     controller: _searchController,
+                    // Call filter function as user types
                     onChanged: _filterCards,
                     decoration: InputDecoration(
                       hintText: 'Search words or phrases...',
@@ -180,9 +223,17 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Words list
+              
+              // ================================================================
+              // SECTION 5.3: WORDS LIST
+              // ================================================================
+              // Shows filtered cards in a scrollable list
               Expanded(
                 child: _filteredCards.isEmpty
+                    // ========================================================
+                    // SECTION 5.3.1: EMPTY STATE
+                    // ========================================================
+                    // Show when no cards match the search
                     ? Center(
                         child: Text(
                           'No words found',
@@ -192,15 +243,20 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                           ),
                         ),
                       )
+                    // ========================================================
+                    // SECTION 5.3.2: WORD LIST
+                    // ========================================================
                     : ListView.builder(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         itemCount: _filteredCards.length,
                         itemBuilder: (context, index) {
+                          // Get the original index in widget.cards
                           final cardIndex =
                               widget.cards.indexOf(_filteredCards[index]);
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: GestureDetector(
+                              // Tap to navigate to this card in flashcard view
                               onTap: () {
                                 Navigator.pop(context, cardIndex);
                               },
@@ -224,8 +280,12 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    // ========================================
+                                    // SECTION 5.3.2.1: CARD NUMBER & WORD
+                                    // ========================================
                                     Row(
                                       children: [
+                                        // Card number badge
                                         Container(
                                           width: 32,
                                           height: 32,
@@ -247,6 +307,7 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 12),
+                                        // Card word/text
                                         Text(
                                           _filteredCards[index],
                                           style: const TextStyle(
@@ -257,6 +318,9 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                                         ),
                                       ],
                                     ),
+                                    // ========================================
+                                    // SECTION 5.3.2.2: NAVIGATION CHEVRON
+                                    // ========================================
                                     Icon(
                                       Icons.chevron_right,
                                       color: Colors.grey[300],
@@ -271,7 +335,11 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                       ),
               ),
               const SizedBox(height: 20),
-              // Bottom navigation
+              
+              // ================================================================
+              // SECTION 5.4: BOTTOM NAVIGATION BAR
+              // ================================================================
+              // Three buttons: Layers, Menu (highlighted), Copy
               Container(
                 margin: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -296,7 +364,7 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Layers icon - navigate to subsections
+                    // Layers icon - navigate back to subsections
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
@@ -336,7 +404,7 @@ class _SubsectionWordsListScreenState extends State<SubsectionWordsListScreen> {
                       child: Icon(Icons.menu, color: Colors.white, size: 24),
                     ),
                     const SizedBox(width: 8),
-                    // Copy icon - navigate to subsections
+                    // Copy icon - navigate back to subsections
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context, 'toSubsections');

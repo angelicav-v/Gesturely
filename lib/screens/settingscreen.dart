@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import '../widgets/background.dart';
 
+// ============================================================================
+// SECTION 1: SETTINGS SCREEN WIDGET SETUP
+// ============================================================================
+// Allows users to configure app settings like notifications and sound.
+// Also provides links to privacy and about pages.
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -9,9 +15,20 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  // ========================================================================
+  // SECTION 2: STATE VARIABLES - SETTINGS TOGGLES
+  // ========================================================================
+  
+  // Whether push notifications are enabled
   bool _pushNotifications = false;
+  
+  // Whether sound effects are enabled
   bool _soundEffects = false;
 
+  // ========================================================================
+  // SECTION 3: UI BUILD METHOD
+  // ========================================================================
+  
   @override
   Widget build(BuildContext context) {
     return GesturelyBackground(
@@ -21,7 +38,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Header
+                // ============================================================
+                // SECTION 3.1: HEADER
+                // ============================================================
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
@@ -29,6 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   child: Row(
                     children: [
+                      // Back button with gradient
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Container(
@@ -50,6 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       const SizedBox(width: 12),
+                      // Settings title
                       const Text(
                         'Settings',
                         style: TextStyle(
@@ -64,7 +85,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                 const SizedBox(height: 24),
 
-                // Notifications Section
+                // ============================================================
+                // SECTION 3.2: NOTIFICATIONS SECTION
+                // ============================================================
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Container(
@@ -82,9 +105,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        // Notifications header
+                        // ======================================================
+                        // SECTION 3.2.1: NOTIFICATIONS HEADER
+                        // ======================================================
                         Row(
                           children: [
+                            // Notifications icon
                             Container(
                               width: 44,
                               height: 44,
@@ -99,6 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                             const SizedBox(width: 12),
+                            // Section title
                             const Text(
                               'Notifications',
                               style: TextStyle(
@@ -110,14 +137,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        // Push Notifications toggle
+                        // ======================================================
+                        // SECTION 3.2.2: PUSH NOTIFICATIONS TOGGLE
+                        // ======================================================
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            // Label and description
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // Setting label
                                   const Text(
                                     'Push Notifications',
                                     style: TextStyle(
@@ -127,6 +158,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
+                                  // Setting description
                                   Text(
                                     'Get notified about your progress',
                                     style: TextStyle(
@@ -139,6 +171,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                             const SizedBox(width: 12),
+                            // Toggle switch
                             SizedBox(
                               height: 24,
                               child: Switch(
@@ -155,14 +188,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // Sound Effects toggle
+                        // ======================================================
+                        // SECTION 3.2.3: SOUND EFFECTS TOGGLE
+                        // ======================================================
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            // Label and description
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // Setting label
                                   const Text(
                                     'Sound Effects',
                                     style: TextStyle(
@@ -172,6 +209,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
+                                  // Setting description
                                   Text(
                                     'Play sounds when flipping cards',
                                     style: TextStyle(
@@ -184,6 +222,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                             const SizedBox(width: 12),
+                            // Toggle switch
                             SizedBox(
                               height: 24,
                               child: Switch(
@@ -206,12 +245,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                 const SizedBox(height: 16),
 
-                // Privacy & Security Section
+                // ============================================================
+                // SECTION 3.3: PRIVACY & SECURITY SECTION
+                // ============================================================
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: GestureDetector(
                     onTap: () {
-                      // Privacy & Security action
+                      // Navigate to privacy & security page
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -229,8 +270,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          // Left side: icon and text
                           Row(
                             children: [
+                              // Lock icon
                               Container(
                                 width: 44,
                                 height: 44,
@@ -245,9 +288,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               const SizedBox(width: 12),
+                              // Text column
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // Section title
                                   const Text(
                                     'Privacy & Security',
                                     style: TextStyle(
@@ -257,6 +302,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
+                                  // Description
                                   Text(
                                     'Manage your data and privacy',
                                     style: TextStyle(
@@ -269,6 +315,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ],
                           ),
+                          // Right side: chevron
                           Icon(
                             Icons.chevron_right,
                             color: Colors.grey[400],
@@ -282,12 +329,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                 const SizedBox(height: 16),
 
-                // About Gesturely Section
+                // ============================================================
+                // SECTION 3.4: ABOUT GESTURELY SECTION
+                // ============================================================
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: GestureDetector(
                     onTap: () {
-                      // About Gesturely action
+                      // Navigate to about page
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -304,12 +353,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       padding: const EdgeInsets.all(20),
                       child: Row(
                         children: [
+                          // Info icon
                           Icon(
                             Icons.info,
                             color: Colors.grey[400],
                             size: 24,
                           ),
                           const SizedBox(width: 12),
+                          // Section title
                           const Text(
                             'About Gesturely',
                             style: TextStyle(

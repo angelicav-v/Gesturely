@@ -6,6 +6,12 @@ import 'modulegridscreen.dart';
 import 'profilescreen.dart';
 import 'settingscreen.dart';
 
+// ============================================================================
+// SECTION 1: BOOKMARKS SCREEN WIDGET SETUP
+// ============================================================================
+// Shows all bookmarked/saved flashcards that the user wants to review later.
+// Users can remove bookmarks and tap to navigate to the card.
+
 class BookmarksScreen extends StatefulWidget {
   const BookmarksScreen({super.key});
 
@@ -14,9 +20,15 @@ class BookmarksScreen extends StatefulWidget {
 }
 
 class _BookmarksScreenState extends State<BookmarksScreen> {
+  // ========================================================================
+  // SECTION 2: UI BUILD METHOD
+  // ========================================================================
+  
   @override
   Widget build(BuildContext context) {
+    // Get all bookmarked cards from global BookmarksTracker
     final bookmarkedCards = BookmarksTracker.getBookmarks();
+    // Check if there are any bookmarks
     bool hasBookmarks = bookmarkedCards.isNotEmpty;
 
     return GesturelyBackground(
@@ -25,7 +37,10 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              // Header
+              // ================================================================
+              // SECTION 2.1: TOP HEADER BAR
+              // ================================================================
+              // Shows profile, app title, and settings icons
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -34,7 +49,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Profile icon
+                    // Profile icon button
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -65,7 +80,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                         ),
                       ),
                     ),
-                    // Title with gradient
+                    // App title with gradient
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
                         begin: Alignment.centerLeft,
@@ -85,7 +100,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                         ),
                       ),
                     ),
-                    // Settings icon
+                    // Settings icon button
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -122,11 +137,15 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
 
               const SizedBox(height: 20),
 
-              // Content - Empty or Bookmarked
+              // ================================================================
+              // SECTION 2.2: MAIN CONTENT - BOOKMARKS OR EMPTY STATE
+              // ================================================================
               Expanded(
                 child: hasBookmarks
-                    ? // Bookmarked flashcards list
-                    Column(
+                    // ========================================================
+                    // SECTION 2.2.1: BOOKMARKED CARDS LIST
+                    // ========================================================
+                    ? Column(
                         children: [
                           // Title
                           const Text(
@@ -138,7 +157,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          // List of bookmarks
+                          // List of bookmark cards
                           Expanded(
                             child: ListView.builder(
                               padding: const EdgeInsets.symmetric(
@@ -164,7 +183,10 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                     padding: const EdgeInsets.all(16),
                                     child: Row(
                                       children: [
-                                        // Module badge
+                                        // ========================================
+                                        // Module Badge
+                                        // ========================================
+                                        // Shows module number with color
                                         Container(
                                           width: 50,
                                           height: 50,
@@ -185,13 +207,16 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 16),
-                                        // Card info
+                                        // ========================================
+                                        // Card Info
+                                        // ========================================
+                                        // Title, module name, subsection
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              // Title
+                                              // Card title
                                               Text(
                                                 card['title'],
                                                 style: const TextStyle(
@@ -223,7 +248,9 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                             ],
                                           ),
                                         ),
-                                        // Bookmark icon - clickable to remove
+                                        // ========================================
+                                        // Remove Bookmark Button
+                                        // ========================================
                                         GestureDetector(
                                           onTap: () {
                                             setState(() {
@@ -249,11 +276,14 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                           ),
                         ],
                       )
-                    : // Empty state
-                    Column(
+                    // ========================================================
+                    // SECTION 2.2.2: EMPTY STATE
+                    // ========================================================
+                    // When no bookmarks exist
+                    : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Bookmark icon
+                          // Bookmark outline icon
                           Icon(
                             Icons.bookmark_outline,
                             size: 80,
@@ -285,7 +315,10 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
 
               const SizedBox(height: 20),
 
-              // Bottom navigation
+              // ================================================================
+              // SECTION 2.3: BOTTOM NAVIGATION BAR
+              // ================================================================
+              // Three buttons: Home, Apps, Bookmarks (highlighted)
               Container(
                 margin: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -310,7 +343,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Home button
+                    // Home button - navigate to home screen
                     GestureDetector(
                       onTap: () => context.go('/home'),
                       child: Padding(
@@ -326,7 +359,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Modules/Apps button
+                    // Apps button - navigate to modules grid
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -349,7 +382,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Bookmarks button (highlighted)
+                    // Bookmarks button (highlighted - current screen)
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
