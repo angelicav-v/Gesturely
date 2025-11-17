@@ -288,8 +288,18 @@ class _FlashcardScreenState extends State<FlashcardScreen>
 
   // Map card names to their media files
   Map<String, dynamic> _getCardMedia(String cardName) {
-    // Cards that use images instead of videos
-    const imageCards = {'Please', 'Sorry', 'Idea', 'Know', 'Bye (pt.1)', 'Bye (pt.2)'};
+    // ALL Module 3 cards are images (Numbers 1-10 and A-Z)
+    const imageCards = {
+      // Common Phrases subsection
+      'Please', 'Sorry', 'Idea', 'Know',
+      // Greetings subsection
+      'Bye (pt.1)', 'Bye (pt.2)',
+      // Numbers 1-10
+      '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      // Alphabet A-Z
+      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
+      'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    };
 
     if (imageCards.contains(cardName)) {
       // Image version
