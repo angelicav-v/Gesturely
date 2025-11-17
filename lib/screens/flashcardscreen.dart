@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/background.dart';
+import '../widgets/video_player_widget.dart';
 import 'subsectionwordlistscreen.dart';
 import 'settingscreen.dart';
 
@@ -107,13 +108,13 @@ class FlashcardScreen extends StatefulWidget {
   final List<String> cards;
 
   const FlashcardScreen({
-    super.key,
+    Key? key,
     required this.moduleNumber,
     required this.subsectionNumber,
     required this.subsectionTitle,
     required this.cardCount,
     this.cards = const [],
-  });
+  }) : super(key: key);
 
   @override
   State<FlashcardScreen> createState() => _FlashcardScreenState();
@@ -126,7 +127,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
   int _currentCard = 0;
   int _maxCardViewed = 0;
   bool _isFlipped = false;
-  final Set<int> _bookmarkedCards = {};
+  Set<int> _bookmarkedCards = {};
 
   final List<Map<String, String>> _cardTemplates = [
     {'front': 'Hello', 'back': 'Hello'},
@@ -160,7 +161,13 @@ class _FlashcardScreenState extends State<FlashcardScreen>
 
     if (cardsToUse.isNotEmpty) {
       for (final card in cardsToUse) {
-        flashcards.add({'front': card, 'back': card});
+        final mediaInfo = _getCardMedia(card);
+        flashcards.add({
+          'front': card,
+          'back': card,
+          'backType': mediaInfo['backType'],
+          'backContent': mediaInfo['backContent'],
+        });
       }
     } else {
       for (int i = 0; i < widget.cardCount; i++) {
@@ -168,6 +175,8 @@ class _FlashcardScreenState extends State<FlashcardScreen>
         flashcards.add({
           'front': '${template['front']} ${(i ~/ _cardTemplates.length) + 1}',
           'back': '${template['back']} ${(i ~/ _cardTemplates.length) + 1}',
+          'backType': 'video',
+          'backContent': 'assets/videos/placeholder.mp4',
         });
       }
     }
@@ -198,10 +207,10 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           return [
             'Goodnight',
             'Goodmorning',
-            "Nice to meet you",
+            'Nice to meet you',
             "What's up?",
             'What is your name?',
-            'My name is …',
+            'My name is',
             'Bye (pt.1)',
             'Bye (pt.2)',
             'Hello',
@@ -277,6 +286,33 @@ class _FlashcardScreenState extends State<FlashcardScreen>
     return [];
   }
 
+  // Map card names to their media files
+  Map<String, dynamic> _getCardMedia(String cardName) {
+    // Cards that use images instead of videos
+    const imageCards = {'Please', 'Sorry', 'Idea', 'Know', 'Bye (pt.1)', 'Bye (pt.2)'};
+
+    if (imageCards.contains(cardName)) {
+      // Image version
+      final imageName = cardName.toLowerCase().replaceAll(' ', '');
+      return {
+        'backType': 'image',
+        'backContent': 'assets/images/$imageName.png',
+      };
+    } else {
+      // Video version - EXACT same logic as common phrases
+      final videoName = cardName.toLowerCase().replaceAll(RegExp(r'[^\w]'), '');
+      
+      // Determine folder: if card is in greetings list, use greetings folder
+      final greetingsCardNames = ['Goodnight', 'Goodmorning', 'Nice to meet you', "What's up?", 'What is your name?', 'My name is', 'Hello'];
+      String folder = greetingsCardNames.contains(cardName) ? 'greetings' : 'common_phrases';
+      
+      return {
+        'backType': 'video',
+        'backContent': 'assets/videos/$folder/$videoName.mp4',
+      };
+    }
+  }
+
   Map<String, dynamic>? _getNextSubsection() {
     final subsectionsByModule = {
       1: [
@@ -312,7 +348,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
             "Nice to meet you",
             "What's up?",
             'What is your name?',
-            'My name is …',
+            'My name is',
             'Bye (pt.1)',
             'Bye (pt.2)',
             'Hello',
@@ -889,36 +925,49 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               const Spacer(),
-                                              Column(
-                                                children: [
-                                                  Container(
-                                                    width: 80,
-                                                    height: 80,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.grey[100],
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            16,
-                                                          ),
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.image,
-                                                      color: Colors.grey[300],
-                                                      size: 40,
+                                              // Display video or image based on backType
+                                              if (flashcards[index]['backType'] == 'video')
+                                                Expanded(
+                                                  flex: 5,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                    child: VideoPlayerWidget(
+                                                      videoPath: flashcards[index]['backContent'] ?? '',
                                                     ),
                                                   ),
-                                                  const SizedBox(height: 12),
-                                                  const Text(
-                                                    'ASL Sign',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Color(0xFF9CA3AF),
+                                                )
+                                              else
+                                                Expanded(
+                                                  flex: 5,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                    child: Image.asset(
+                                                      flashcards[index]['backContent'] ?? '',
+                                                      fit: BoxFit.contain,
+                                                      errorBuilder: (context, error, stackTrace) {
+                                                        return Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.image,
+                                                              color: Colors.grey[300],
+                                                              size: 40,
+                                                            ),
+                                                            const SizedBox(height: 12),
+                                                            const Text(
+                                                              'Image not found',
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w400,
+                                                                color: Color(0xFF9CA3AF),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
                                                     ),
                                                   ),
-                                                ],
-                                              ),
+                                                ),
                                               const Spacer(),
                                               Container(
                                                 width: double.infinity,
