@@ -302,9 +302,13 @@ class _FlashcardScreenState extends State<FlashcardScreen>
       // Video version - EXACT same logic as common phrases
       final videoName = cardName.toLowerCase().replaceAll(RegExp(r'[^\w]'), '');
       
-      // Determine folder: if card is in greetings list, use greetings folder
+      // Determine folder based on subsection
       final greetingsCardNames = ['Goodnight', 'Goodmorning', 'Nice to meet you', "What's up?", 'What is your name?', 'My name is', 'Hello'];
-      String folder = greetingsCardNames.contains(cardName) ? 'greetings' : 'common_phrases';
+      final directionsCardNames = ['Left', 'North', 'South', 'East', 'West', 'Right', 'Where'];
+      
+      String folder = greetingsCardNames.contains(cardName) ? 'greetings' 
+          : directionsCardNames.contains(cardName) ? 'directions'
+          : 'common_phrases';
       
       return {
         'backType': 'video',
