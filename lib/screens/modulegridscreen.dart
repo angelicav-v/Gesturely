@@ -4,6 +4,13 @@ import '../widgets/background.dart';
 import 'profilescreen.dart';
 import 'settingscreen.dart';
 
+// ============================================================================
+// SECTION 1: MODULES GRID SCREEN WIDGET SETUP
+// ============================================================================
+// Displays all 4 modules in a 2x2 grid format.
+// Users can tap any module to view its subsections.
+// Alternative to the carousel view on home screen.
+
 class ModulesGridScreen extends StatefulWidget {
   const ModulesGridScreen({super.key});
 
@@ -12,6 +19,17 @@ class ModulesGridScreen extends StatefulWidget {
 }
 
 class _ModulesGridScreenState extends State<ModulesGridScreen> {
+  // ========================================================================
+  // SECTION 2: MODULE DATA
+  // ========================================================================
+  // All 4 modules with metadata (colors, images, titles)
+  // Each module has:
+  // - number: Module ID (1-4)
+  // - title: Display name
+  // - image: Asset path
+  // - gradientStart/End: Background colors
+  // - buttonColor: Color for module badge
+  
   final List<Map<String, dynamic>> modules = [
     {
       'number': 1,
@@ -47,6 +65,10 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
     },
   ];
 
+  // ========================================================================
+  // SECTION 3: UI BUILD METHOD
+  // ========================================================================
+  
   @override
   Widget build(BuildContext context) {
     return GesturelyBackground(
@@ -55,7 +77,10 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              // Header
+              // ================================================================
+              // SECTION 3.1: TOP HEADER BAR
+              // ================================================================
+              // Shows profile, app title, and settings icons
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -64,7 +89,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Profile icon
+                    // Profile icon button
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -95,7 +120,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                         ),
                       ),
                     ),
-                    // Title with gradient
+                    // App title with gradient
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
                         begin: Alignment.centerLeft,
@@ -115,7 +140,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                         ),
                       ),
                     ),
-                    // Settings icon
+                    // Settings icon button
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -152,7 +177,9 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
 
               const SizedBox(height: 20),
 
-              // All Modules title
+              // ================================================================
+              // SECTION 3.2: PAGE TITLE
+              // ================================================================
               const Text(
                 'All Modules',
                 style: TextStyle(
@@ -164,11 +191,15 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
 
               const SizedBox(height: 24),
 
-              // 2x2 Grid of modules
+              // ================================================================
+              // SECTION 3.3: 2x2 GRID OF MODULES
+              // ================================================================
+              // GridView displays modules in 2 columns
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: GridView.builder(
+                    // Configure grid: 2 columns, spacing, aspect ratio
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -179,6 +210,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                     itemCount: modules.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
+                        // Navigate to subsections when module is tapped
                         onTap: () {
                           context.push(
                             '/module-subsections',
@@ -190,6 +222,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
+                            // Gradient background
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -212,7 +245,9 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                           padding: const EdgeInsets.all(16),
                           child: Column(
                             children: [
-                              // Module button
+                              // ================================================
+                              // Module badge with number
+                              // ================================================
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 15,
@@ -242,7 +277,9 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
 
                               const SizedBox(height: 11),
 
-                              // White content box with module image
+                              // ================================================
+                              // Module image in white container
+                              // ================================================
                               Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -262,6 +299,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                                     child: Image.asset(
                                       modules[index]['image'],
                                       fit: BoxFit.cover,
+                                      // Error handler if image not found
                                       errorBuilder:
                                           (context, error, stackTrace) {
                                             return Container(
@@ -284,7 +322,9 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
 
                               const SizedBox(height: 12),
 
+                              // ================================================
                               // Module title
+                              // ================================================
                               Text(
                                 modules[index]['title'],
                                 style: const TextStyle(
@@ -305,7 +345,10 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
 
               const SizedBox(height: 20),
 
-              // Bottom navigation
+              // ================================================================
+              // SECTION 3.4: BOTTOM NAVIGATION BAR
+              // ================================================================
+              // Three buttons: Home, Apps (highlighted), Bookmarks
               Container(
                 margin: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -330,7 +373,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Home button
+                    // Home button - navigate to home
                     GestureDetector(
                       onTap: () => context.go('/home'),
                       child: Padding(
@@ -346,7 +389,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Modules/Apps button (highlighted)
+                    // Apps button (highlighted - current screen)
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -363,7 +406,7 @@ class _ModulesGridScreenState extends State<ModulesGridScreen> {
                       child: Icon(Icons.apps, color: Colors.white, size: 26),
                     ),
                     const SizedBox(width: 16),
-                    // Bookmark button
+                    // Bookmarks button - navigate to bookmarks
                     GestureDetector(
                       onTap: () => context.go('/bookmarks'),
                       child: Padding(

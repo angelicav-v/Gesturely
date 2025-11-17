@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import '../widgets/background.dart';
 import 'flashcardscreen.dart' show ProgressTracker, BookmarksTracker;
 
+// ============================================================================
+// SECTION 1: PROFILE SCREEN WIDGET SETUP
+// ============================================================================
+// Shows user profile information, statistics, and learning progress.
+// Displays bookmarks count, cards learned, and progress per module.
+
 class ProfileScreen extends StatefulWidget {
   final String? userName;
   final String? userEmail;
@@ -17,9 +23,21 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  // ========================================================================
+  // SECTION 2: STATE VARIABLES
+  // ========================================================================
+  
+  // Track number of cards learned
   int _cardsLearned = 0;
+  
+  // Track number of bookmarks
   int _bookmarksCount = 0;
 
+  // ========================================================================
+  // SECTION 3: MODULE DATA
+  // ========================================================================
+  // List of all modules with their metadata
+  
   final List<Map<String, dynamic>> modules = [
     {
       'number': 1,
@@ -43,25 +61,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
     },
   ];
 
+  // ========================================================================
+  // SECTION 4: LIFECYCLE METHODS
+  // ========================================================================
+  
   @override
   void initState() {
     super.initState();
+    // Calculate and update statistics on screen load
     _updateStats();
   }
 
+  // ========================================================================
+  // SECTION 5: STATISTICS CALCULATION METHODS
+  // ========================================================================
+  
+  /// Calculate and update user statistics
+  /// 
+  /// Updates:
+  /// - Total bookmarks count
+  /// - Total cards learned (estimated from progress)
   void _updateStats() {
     setState(() {
-      // Count bookmarks
+      // Count all bookmarks from BookmarksTracker
       _bookmarksCount = BookmarksTracker.getBookmarks().length;
 
-      // Calculate total cards learned (sum of all module progress)
+      // Calculate total cards learned based on module progress
       int total = 0;
+      // Loop through all modules (1-4)
       for (int i = 1; i <= 4; i++) {
+        // Loop through all subsections (1-2)
         for (int j = 1; j <= 2; j++) {
           final key = '${i}_$j';
+          // Get progress for this module/subsection
           final progress = ProgressTracker.getProgress(key);
+          // Estimate cards learned (rough: progress * 20 cards per subsection)
           if (progress > 0) {
-            // Estimate cards learned based on module
             total += (progress * 20).toInt();
           }
         }
@@ -70,6 +105,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  // ========================================================================
+  // SECTION 6: UI BUILD METHOD
+  // ========================================================================
+  
   @override
   Widget build(BuildContext context) {
     return GesturelyBackground(
@@ -81,11 +120,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 const SizedBox(height: 12),
 
-                // Header with back button
+                // ============================================================
+                // SECTION 6.1: HEADER WITH BACK BUTTON
+                // ============================================================
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
+                      // Back button
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Container(
@@ -115,7 +157,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 const SizedBox(height: 20),
 
-                // Profile Card
+                // ============================================================
+                // SECTION 6.2: PROFILE CARD
+                // ============================================================
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Container(
@@ -133,10 +177,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       children: [
-                        // Avatar and name
+                        // ======================================================
+                        // SECTION 6.2.1: USER AVATAR & NAME
+                        // ======================================================
                         Row(
                           children: [
-                            // Avatar
+                            // Avatar with gradient background
                             Container(
                               width: 70,
                               height: 70,
@@ -163,6 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // User name
                                   Text(
                                     widget.userName ?? 'Sarah Johnson',
                                     style: const TextStyle(
@@ -172,6 +219,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
+                                  // User email
                                   Text(
                                     widget.userEmail ?? 'sarah.j@email.com',
                                     style: TextStyle(
@@ -186,11 +234,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                         const SizedBox(height: 24),
-                        // Stats
+                        // ======================================================
+                        // SECTION 6.2.2: STATISTICS DISPLAY
+                        // ======================================================
+                        // Shows bookmarks and cards learned
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            // Bookmarks
+                            // Bookmarks stat
                             Column(
                               children: [
                                 Container(
@@ -226,7 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ],
                             ),
-                            // Cards Learned
+                            // Cards learned stat
                             Column(
                               children: [
                                 Container(
@@ -272,12 +323,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 const SizedBox(height: 32),
 
-                // Learning Progress Section
+                // ============================================================
+                // SECTION 6.3: LEARNING PROGRESS SECTION
+                // ============================================================
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Title
                       const Text(
                         'Learning Progress',
                         style: TextStyle(
@@ -287,6 +341,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
+                      // Progress container with bars for each module
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -305,15 +360,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             modules.length,
                             (index) {
                               final module = modules[index];
-                              double progress = 0;
-
                               // Calculate average progress for this module
+                              double progress = 0;
+                              // Loop through subsections 1-2
                               for (int j = 1; j <= 2; j++) {
                                 final key = '${module['number']}_$j';
+                                // Get progress and average
                                 progress +=
                                     ProgressTracker.getProgress(key) / 2;
                               }
 
+                              // Convert to percentage (0-100)
                               final progressPercent =
                                   (progress * 100).toStringAsFixed(0);
 
@@ -325,9 +382,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                   children: [
+                                    // ========================================
                                     // Module title and percentage
+                                    // ========================================
                                     Row(
                                       children: [
+                                        // Module badge
                                         Container(
                                           width: 40,
                                           height: 40,
@@ -348,6 +408,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 12),
+                                        // Module name
                                         Expanded(
                                           child: Text(
                                             module['title'],
@@ -358,6 +419,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             ),
                                           ),
                                         ),
+                                        // Progress percentage
                                         Text(
                                           '$progressPercent%',
                                           style: const TextStyle(
@@ -369,7 +431,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ],
                                     ),
                                     const SizedBox(height: 8),
+                                    // ========================================
                                     // Progress bar
+                                    // ========================================
                                     ClipRRect(
                                       borderRadius:
                                           BorderRadius.circular(4),
@@ -379,8 +443,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         backgroundColor: Colors.grey[200],
                                         valueColor:
                                             AlwaysStoppedAnimation<Color>(
-                                          module['color'],
-                                        ),
+                                              module['color'],
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -396,12 +460,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 const SizedBox(height: 32),
 
-                // Account Section
+                // ============================================================
+                // SECTION 6.4: ACCOUNT SECTION
+                // ============================================================
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Title
                       const Text(
                         'Account',
                         style: TextStyle(
@@ -411,9 +478,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
+                      // Log out button
                       GestureDetector(
                         onTap: () {
-                          // Log out action
+                          // Log out action would go here
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -433,6 +501,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           child: Row(
                             children: [
+                              // Logout icon
                               Container(
                                 width: 40,
                                 height: 40,
@@ -447,6 +516,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                               const SizedBox(width: 12),
+                              // Log out text
                               const Expanded(
                                 child: Text(
                                   'Log Out',
@@ -457,6 +527,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 ),
                               ),
+                              // Chevron right
                               Icon(
                                 Icons.chevron_right,
                                 color: Colors.grey[400],

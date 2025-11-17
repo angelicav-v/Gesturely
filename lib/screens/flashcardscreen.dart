@@ -5,7 +5,18 @@ import '../widgets/video_player_widget.dart';
 import 'subsectionwordlistscreen.dart';
 import 'settingscreen.dart';
 
-// Global progress tracker
+// ============================================================================
+// SECTION 1: GLOBAL STATE MANAGEMENT CLASSES
+// ============================================================================
+// These classes manage data that needs to be shared across multiple screens
+// (Progress tracking and Bookmarks). They use static members so the data
+// persists even when navigating between screens.
+
+/// ProgressTracker - Manages user learning progress
+/// 
+/// Tracks how much of each subsection the user has completed.
+/// Uses key format: 'moduleNumber_subsectionNumber' (e.g., '1_2')
+/// Progress value: 0.0 (not started) to 1.0 (completed)
 class ProgressTracker {
   static final Map<String, double> _progress = {};
 
@@ -22,7 +33,10 @@ class ProgressTracker {
   }
 }
 
-// Global bookmarks tracker
+/// BookmarksTracker - Manages bookmarked flashcards
+/// 
+/// Users can bookmark cards they want to review later.
+/// Stores bookmark data with module, subsection, and card info.
 class BookmarksTracker {
   static final List<Map<String, dynamic>> _bookmarks = [];
 
@@ -84,23 +98,32 @@ class BookmarksTracker {
     );
   }
 
+  /// Returns the module color for visual distinction
   static Color _getModuleColor(int moduleNumber) {
     switch (moduleNumber) {
       case 1:
-        return const Color(0xFFFF69B4);
+        return const Color(0xFFFF69B4); // Pink
       case 2:
-        return const Color(0xFF10B981);
+        return const Color(0xFF10B981); // Green
       case 3:
-        return const Color(0xFFBB86FC);
+        return const Color(0xFFBB86FC); // Purple
       case 4:
-        return const Color(0xFF00BCD4);
+        return const Color(0xFF00BCD4); // Cyan
       default:
         return const Color(0xFF2C3E50);
     }
   }
 }
 
+// ============================================================================
+// SECTION 2: FLASHCARD SCREEN WIDGET SETUP
+// ============================================================================
+// This is the main screen that displays flashcards to the user.
+// It's a StatefulWidget because it needs to track state like current card,
+// whether it's flipped, animations, etc.
+
 class FlashcardScreen extends StatefulWidget {
+  // Screen parameters passed from navigation
   final int moduleNumber;
   final int subsectionNumber;
   final String subsectionTitle;
@@ -122,13 +145,30 @@ class FlashcardScreen extends StatefulWidget {
 
 class _FlashcardScreenState extends State<FlashcardScreen>
     with SingleTickerProviderStateMixin {
+  // ========================================================================
+  // SECTION 3: STATE VARIABLES
+  // ========================================================================
+  // These variables track the current state of the screen
+
+  // Page controller - allows swiping between cards
   late PageController _pageController;
+  
+  // Animation controller - handles the 3D flip animation (600ms)
   late AnimationController _flipController;
+  
+  // Current card index being viewed (0-based)
   int _currentCard = 0;
+  
+  // Track the furthest card the user has seen (for progress tracking)
   int _maxCardViewed = 0;
+  
+  // Whether current card is flipped to show back
   bool _isFlipped = false;
+  
+  // Set of indices for bookmarked cards (using Set for fast lookup)
   Set<int> _bookmarkedCards = {};
 
+  // Default card templates - used as fallback if no real data provided
   final List<Map<String, String>> _cardTemplates = [
     {'front': 'Hello', 'back': 'Hello'},
     {'front': 'Thank You', 'back': 'Thank You'},
@@ -142,34 +182,64 @@ class _FlashcardScreenState extends State<FlashcardScreen>
     {'front': 'How are you?', 'back': 'How are you?'},
   ];
 
+  // List of flashcards with front/back and media type (video/image)
   late List<Map<String, String>> flashcards;
+
+  // ========================================================================
+  // SECTION 4: LIFECYCLE METHODS
+  // ========================================================================
+  // These methods run at specific points in the widget's life
 
   @override
   void initState() {
     super.initState();
+    // Initialize page controller for card swiping
     _pageController = PageController();
+    // Initialize animation controller for 3D flip (600ms duration)
     _flipController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
+    // Generate flashcard data from module/subsection info
     _generateFlashcards();
   }
 
+  @override
+  void dispose() {
+    // Clean up controllers when widget is destroyed
+    _pageController.dispose();
+    _flipController.dispose();
+    super.dispose();
+  }
+
+  // ========================================================================
+  // SECTION 5: DATA GENERATION METHODS
+  // ========================================================================
+  // These methods fetch and organize card data
+
+  /// Generate flashcards from module and subsection data
+  /// 
+  /// This method:
+  /// 1. Gets the card names for this module/subsection combination
+  /// 2. Converts each card name to a flashcard object
+  /// 3. Adds media info (video or image path) to each card
   void _generateFlashcards() {
     flashcards = [];
     List<String> cardsToUse = _getCardsByModuleAndSubsection();
 
     if (cardsToUse.isNotEmpty) {
+      // Convert each card name to a full flashcard object with media
       for (final card in cardsToUse) {
         final mediaInfo = _getCardMedia(card);
         flashcards.add({
           'front': card,
           'back': card,
-          'backType': mediaInfo['backType'],
-          'backContent': mediaInfo['backContent'],
+          'backType': mediaInfo['backType'], // 'video' or 'image'
+          'backContent': mediaInfo['backContent'], // file path
         });
       }
     } else {
+      // Fallback: use template cards if no data found
       for (int i = 0; i < widget.cardCount; i++) {
         final template = _cardTemplates[i % _cardTemplates.length];
         flashcards.add({
@@ -182,10 +252,16 @@ class _FlashcardScreenState extends State<FlashcardScreen>
     }
   }
 
+  /// Get all card names for a specific module and subsection
+  /// 
+  /// Returns a list of card front-text (e.g., ['Hello', 'Goodbye', ...])
+  /// The data is organized by module number and subsection number
   List<String> _getCardsByModuleAndSubsection() {
     switch (widget.moduleNumber) {
       case 1:
+        // Module 1: Greetings & Introductions
         if (widget.subsectionNumber == 1) {
+          // Subsection 1: Common Phrases (15 cards)
           return [
             "I don't know",
             'Learn',
@@ -204,6 +280,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
             'Know',
           ];
         } else if (widget.subsectionNumber == 2) {
+          // Subsection 2: Greetings & Introductions (9 cards)
           return [
             'Goodnight',
             'Goodmorning',
@@ -218,67 +295,40 @@ class _FlashcardScreenState extends State<FlashcardScreen>
         }
         break;
       case 2:
+        // Module 2: Directions
         if (widget.subsectionNumber == 1) {
           return ['Left', 'North', 'South', 'East', 'West', 'Right', 'Where'];
         }
         break;
       case 3:
+        // Module 3: Alphabet & Numbers
         if (widget.subsectionNumber == 1) {
           return ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
         } else if (widget.subsectionNumber == 2) {
           return [
-            'A',
-            'B',
-            'C',
-            'D',
-            'E',
-            'F',
-            'G',
-            'H',
-            'I',
-            'J',
-            'K',
-            'L',
-            'M',
-            'N',
-            'O',
-            'P',
-            'Q',
-            'R',
-            'S',
-            'T',
-            'U',
-            'V',
-            'W',
-            'X',
-            'Y',
-            'Z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
           ];
         }
         break;
       case 4:
+        // Module 4: Emotions & People
         if (widget.subsectionNumber == 1) {
-          return ['Surprised', 'Hungry', 'Tired', 'Angry', 'Worried', 'Happy'];
+          return [
+            'Surprised',
+            'Hungry',
+            'Tired',
+            'Angry',
+            'Worried',
+            'Happy',
+          ];
         } else if (widget.subsectionNumber == 2) {
           return [
-            'Sister (pt.1)',
-            'Sister (pt.2)',
-            'Brother (pt.1)',
-            'Brother (pt.2)',
-            'Mother',
-            'Father',
-            'Grandma (pt.1)',
-            'Grandma (pt.2)',
-            'Grandpa (pt.1)',
-            'Grandpa (pt.2)',
-            'Girl (pt.1)',
-            'Girl (pt.2)',
-            'Boy (pt.1)',
-            'Boy (pt.2)',
-            'Woman (pt.1)',
-            'Woman (pt.2)',
-            'Man (pt.1)',
-            'Man (pt.2)',
+            'Sister (pt.1)', 'Sister (pt.2)', 'Brother (pt.1)', 'Brother (pt.2)',
+            'Mother', 'Father', 'Grandma (pt.1)', 'Grandma (pt.2)',
+            'Grandpa (pt.1)', 'Grandpa (pt.2)', 'Girl (pt.1)', 'Girl (pt.2)',
+            'Boy (pt.1)', 'Boy (pt.2)', 'Woman (pt.1)', 'Woman (pt.2)',
+            'Man (pt.1)', 'Man (pt.2)',
           ];
         }
         break;
@@ -286,9 +336,22 @@ class _FlashcardScreenState extends State<FlashcardScreen>
     return [];
   }
 
-  // Map card names to their media files
+  // ========================================================================
+  // SECTION 6: MEDIA ROUTING METHODS
+  // ========================================================================
+  // These methods convert card names to file paths (videos or images)
+
+  /// Convert card name to media file path
+  /// 
+  /// This determines if the card uses a video or image, then routes to
+  /// the correct folder and converts the name to the correct filename.
+  /// 
+  /// Example conversions:
+  /// - 'Hello' -> 'assets/videos/greetings/hello.mp4' (video)
+  /// - 'Please' -> 'assets/images/please.png' (image)
+  /// - 'A' -> 'assets/images/a.png' (image)
   Map<String, dynamic> _getCardMedia(String cardName) {
-    // ALL Module 3 and Module 4 subsection 2 (People) cards are images
+    // Define which cards use images instead of videos
     const imageCards = {
       // Common Phrases subsection
       'Please', 'Sorry', 'Idea', 'Know',
@@ -307,18 +370,19 @@ class _FlashcardScreenState extends State<FlashcardScreen>
       'Man (pt.1)', 'Man (pt.2)',
     };
 
+    // CASE 1: Image card
     if (imageCards.contains(cardName)) {
-      // Image version
       final imageName = cardName.toLowerCase().replaceAll(' ', '');
       return {
         'backType': 'image',
         'backContent': 'assets/images/$imageName.png',
       };
-    } else {
-      // Video version
+    } 
+    // CASE 2: Video card
+    else {
       final videoName = cardName.toLowerCase().replaceAll(RegExp(r'[^\w]'), '');
       
-      // Determine folder based on subsection
+      // Determine which folder based on card name
       final greetingsCardNames = ['Goodnight', 'Goodmorning', 'Nice to meet you', "What's up?", 'What is your name?', 'My name is', 'Hello'];
       final directionsCardNames = ['Left', 'North', 'South', 'East', 'West', 'Right', 'Where'];
       final emotionsCardNames = ['Surprised', 'Hungry', 'Tired', 'Angry', 'Worried', 'Happy'];
@@ -335,29 +399,26 @@ class _FlashcardScreenState extends State<FlashcardScreen>
     }
   }
 
+  // ========================================================================
+  // SECTION 7: NAVIGATION & COMPLETION METHODS
+  // ========================================================================
+  // These methods handle user navigation and completion of subsections
+
+  /// Get the next subsection after the current one
+  /// 
+  /// Returns subsection data if there is a next one, or null if this
+  /// is the last subsection in the module
   Map<String, dynamic>? _getNextSubsection() {
-    final subsectionsByModule = {
+    const subsectionsByModule = {
       1: [
         {
           'number': 1,
           'title': 'Common Phrases',
           'cardCount': 15,
           'cards': [
-            "I don't know",
-            'Learn',
-            "You're welcome",
-            'Thank you',
-            'Please',
-            'Sorry',
-            'Yes',
-            'Why',
-            'No',
-            'Me too / Same',
-            'Always',
-            'Never',
-            'Wrong / Mistake',
-            'Idea',
-            'Know',
+            "I don't know", 'Learn', "You're welcome", 'Thank you', 'Please',
+            'Sorry', 'Yes', 'Why', 'No', 'Me too / Same', 'Always', 'Never',
+            'Wrong / Mistake', 'Idea', 'Know',
           ],
         },
         {
@@ -365,14 +426,8 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           'title': 'Greetings & Introductions',
           'cardCount': 9,
           'cards': [
-            'Goodnight',
-            'Goodmorning',
-            "Nice to meet you",
-            "What's up?",
-            'What is your name?',
-            'My name is',
-            'Bye (pt.1)',
-            'Bye (pt.2)',
+            'Goodnight', 'Goodmorning', 'Nice to meet you', "What's up?",
+            'What is your name?', 'My name is', 'Bye (pt.1)', 'Bye (pt.2)',
             'Hello',
           ],
         },
@@ -397,32 +452,8 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           'title': "ABC's",
           'cardCount': 26,
           'cards': [
-            'A',
-            'B',
-            'C',
-            'D',
-            'E',
-            'F',
-            'G',
-            'H',
-            'I',
-            'J',
-            'K',
-            'L',
-            'M',
-            'N',
-            'O',
-            'P',
-            'Q',
-            'R',
-            'S',
-            'T',
-            'U',
-            'V',
-            'W',
-            'X',
-            'Y',
-            'Z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
           ],
         },
       ],
@@ -432,12 +463,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           'title': 'Emotions',
           'cardCount': 6,
           'cards': [
-            'Surprised',
-            'Hungry',
-            'Tired',
-            'Angry',
-            'Worried',
-            'Happy',
+            'Surprised', 'Hungry', 'Tired', 'Angry', 'Worried', 'Happy'
           ],
         },
         {
@@ -445,24 +471,11 @@ class _FlashcardScreenState extends State<FlashcardScreen>
           'title': 'People',
           'cardCount': 18,
           'cards': [
-            'Sister (pt.1)',
-            'Sister (pt.2)',
-            'Brother (pt.1)',
-            'Brother (pt.2)',
-            'Mother',
-            'Father',
-            'Grandma (pt.1)',
-            'Grandma (pt.2)',
-            'Grandpa (pt.1)',
-            'Grandpa (pt.2)',
-            'Girl (pt.1)',
-            'Girl (pt.2)',
-            'Boy (pt.1)',
-            'Boy (pt.2)',
-            'Woman (pt.1)',
-            'Woman (pt.2)',
-            'Man (pt.1)',
-            'Man (pt.2)',
+            'Sister (pt.1)', 'Sister (pt.2)', 'Brother (pt.1)', 'Brother (pt.2)',
+            'Mother', 'Father', 'Grandma (pt.1)', 'Grandma (pt.2)',
+            'Grandpa (pt.1)', 'Grandpa (pt.2)', 'Girl (pt.1)', 'Girl (pt.2)',
+            'Boy (pt.1)', 'Boy (pt.2)', 'Woman (pt.1)', 'Woman (pt.2)',
+            'Man (pt.1)', 'Man (pt.2)',
           ],
         },
       ],
@@ -480,17 +493,17 @@ class _FlashcardScreenState extends State<FlashcardScreen>
     return null;
   }
 
+  /// Check if this is the last subsection in the module
   bool _isLastSubsection() {
     return _getNextSubsection() == null;
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    _flipController.dispose();
-    super.dispose();
-  }
-
+  /// Show the completion dialog when user finishes all cards
+  /// 
+  /// Displays options to:
+  /// - Redo the same set
+  /// - Move to next subsection (if available)
+  /// - Go back to subsections screen
   void _showCompletionDialog() {
     showDialog(
       context: context,
@@ -529,8 +542,8 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                   // Completion text
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
+                    children: const [
+                      Text(
                         'Section Completed ',
                         style: TextStyle(
                           fontSize: 16,
@@ -538,7 +551,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                           color: Color(0xFF6B7280),
                         ),
                       ),
-                      const Text('✓', style: TextStyle(fontSize: 18)),
+                      Text('✓', style: TextStyle(fontSize: 18)),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -663,6 +676,11 @@ class _FlashcardScreenState extends State<FlashcardScreen>
     );
   }
 
+  // ========================================================================
+  // SECTION 8: UI BUILD METHOD
+  // ========================================================================
+  // This is the main widget build method that constructs the UI
+
   @override
   Widget build(BuildContext context) {
     return GesturelyBackground(
@@ -671,7 +689,10 @@ class _FlashcardScreenState extends State<FlashcardScreen>
         body: SafeArea(
           child: Column(
             children: [
-              // Header
+              // ================================================================
+              // SECTION 8.1: TOP HEADER BAR
+              // ================================================================
+              // Shows back button, title, and settings button
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -758,10 +779,15 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                 ),
               ),
               const SizedBox(height: 16),
-              // Card counter
+              
+              // ================================================================
+              // SECTION 8.2: CARD COUNTER & BOOKMARK BUTTON
+              // ================================================================
+              // Shows current card number and bookmark functionality
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Bookmark button - toggles between bookmarked/unbookmarked
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -814,6 +840,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                     ),
                   ),
                   const SizedBox(width: 12),
+                  // Card counter display
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -842,11 +869,16 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                 ],
               ),
               const SizedBox(height: 24),
-              // Flashcard PageView
+              
+              // ================================================================
+              // SECTION 8.3: FLASHCARD PAGEVIEW
+              // ================================================================
+              // The main card display with flip animation and video/image
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
                   clipBehavior: Clip.hardEdge,
+                  // Update state when page changes (swiping)
                   onPageChanged: (index) {
                     setState(() {
                       _currentCard = index;
@@ -862,6 +894,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: GestureDetector(
+                        // Tap to flip card
                         onTap: () {
                           if (_isFlipped) {
                             _flipController.reverse();
@@ -872,13 +905,16 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                             _isFlipped = !_isFlipped;
                           });
                         },
+                        // Animated builder for 3D flip effect
                         child: AnimatedBuilder(
                           animation: _flipController,
                           builder: (context, child) {
+                            // Calculate rotation angle (0 to π radians)
                             final angle = _flipController.value * 3.14159;
+                            // Create 3D rotation matrix
                             final transform = Matrix4.identity()
-                              ..setEntry(3, 2, 0.001)
-                              ..rotateY(angle);
+                              ..setEntry(3, 2, 0.001) // perspective
+                              ..rotateY(angle); // rotate around Y axis
 
                             return Transform(
                               alignment: Alignment.center,
@@ -903,6 +939,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
+                                    // FRONT OF CARD (question side)
                                     if (_flipController.value < 0.5)
                                       Expanded(
                                         child: Column(
@@ -936,25 +973,35 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                                           ],
                                         ),
                                       )
+                                    // BACK OF CARD (answer side with video/image)
                                     else
                                       Expanded(
                                         child: Transform(
                                           alignment: Alignment.center,
                                           transform: Matrix4.identity()
-                                            ..rotateY(3.14159),
+                                            ..rotateY(3.14159), // flip text too
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               const Spacer(),
-                                              // Display video or image based on backType
-                                              if (flashcards[index]['backType'] == 'video')
+                                              // VIDEO OR IMAGE DISPLAY
+                                              if (flashcards[index]
+                                                      ['backType'] ==
+                                                  'video')
                                                 Expanded(
                                                   flex: 5,
                                                   child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 8,
+                                                    ),
                                                     child: VideoPlayerWidget(
-                                                      videoPath: flashcards[index]['backContent'] ?? '',
+                                                      videoPath:
+                                                          flashcards[index]
+                                                              ['backContent'] ??
+                                                              '',
                                                     ),
                                                   ),
                                                 )
@@ -962,26 +1009,42 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                                                 Expanded(
                                                   flex: 5,
                                                   child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 8,
+                                                    ),
                                                     child: Image.asset(
-                                                      flashcards[index]['backContent'] ?? '',
+                                                      flashcards[index]
+                                                          ['backContent'] ??
+                                                          '',
                                                       fit: BoxFit.contain,
-                                                      errorBuilder: (context, error, stackTrace) {
+                                                      errorBuilder: (context,
+                                                          error, stackTrace) {
                                                         return Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
                                                           children: [
                                                             Icon(
                                                               Icons.image,
-                                                              color: Colors.grey[300],
+                                                              color: Colors
+                                                                  .grey[300],
                                                               size: 40,
                                                             ),
-                                                            const SizedBox(height: 12),
+                                                            const SizedBox(
+                                                              height: 12,
+                                                            ),
                                                             const Text(
                                                               'Image not found',
                                                               style: TextStyle(
                                                                 fontSize: 14,
-                                                                fontWeight: FontWeight.w400,
-                                                                color: Color(0xFF9CA3AF),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: Color(
+                                                                  0xFF9CA3AF,
+                                                                ),
                                                               ),
                                                             ),
                                                           ],
@@ -991,34 +1054,38 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                                                   ),
                                                 ),
                                               const Spacer(),
+                                              // TEXT DEFINITION AT BOTTOM
                                               Container(
                                                 width: double.infinity,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 16,
-                                                    ),
+                                                padding: const EdgeInsets
+                                                    .symmetric(
+                                                  horizontal: 20,
+                                                  vertical: 16,
+                                                ),
                                                 decoration: BoxDecoration(
                                                   gradient:
                                                       const LinearGradient(
-                                                        begin: Alignment
-                                                            .centerLeft,
-                                                        end: Alignment
-                                                            .centerRight,
-                                                        colors: [
-                                                          Color(0xFFFF8904),
-                                                          Color(0xFFFF637E),
-                                                          Color(0xFFFB64B6),
-                                                        ],
-                                                      ),
+                                                    begin:
+                                                        Alignment.centerLeft,
+                                                    end:
+                                                        Alignment.centerRight,
+                                                    colors: [
+                                                      Color(0xFFFF8904),
+                                                      Color(0xFFFF637E),
+                                                      Color(0xFFFB64B6),
+                                                    ],
+                                                  ),
                                                   borderRadius:
-                                                      BorderRadius.circular(12),
+                                                      BorderRadius.circular(
+                                                    12,
+                                                  ),
                                                 ),
                                                 child: Text(
                                                   '"${flashcards[index]['back'] ?? ''}"',
                                                   style: const TextStyle(
                                                     fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
+                                                    fontWeight:
+                                                        FontWeight.w600,
                                                     color: Colors.white,
                                                   ),
                                                   textAlign: TextAlign.center,
@@ -1040,12 +1107,17 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                 ),
               ),
               const SizedBox(height: 24),
-              // Navigation
+              
+              // ================================================================
+              // SECTION 8.4: NAVIGATION & PROGRESS DOTS
+              // ================================================================
+              // Shows arrow buttons and progress indicator dots
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Left arrow button
                     GestureDetector(
                       onTap: () {
                         if (_currentCard > 0) {
@@ -1076,6 +1148,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                         ),
                       ),
                     ),
+                    // Progress dots - one for each card
                     Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1095,6 +1168,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                         ),
                       ),
                     ),
+                    // Right arrow button
                     GestureDetector(
                       onTap: () {
                         if (_currentCard < widget.cardCount - 1) {
@@ -1103,6 +1177,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                             curve: Curves.easeOutCubic,
                           );
                         } else if (_currentCard == widget.cardCount - 1) {
+                          // Last card - show completion dialog
                           _showCompletionDialog();
                         }
                       },
@@ -1131,7 +1206,11 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                 ),
               ),
               const SizedBox(height: 20),
-              // Bottom navigation
+              
+              // ================================================================
+              // SECTION 8.5: BOTTOM NAVIGATION BAR
+              // ================================================================
+              // Three buttons: Layers (subsections), Menu (words list), Copy (flashcards)
               Container(
                 margin: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -1156,7 +1235,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Layers icon - go to subsections
+                    // Layers icon - go back to subsections
                     GestureDetector(
                       onTap: () {
                         final progressKey =
@@ -1179,7 +1258,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                       ),
                     ),
                     const SizedBox(width: 8),
-                    // Menu icon - navigate to words list
+                    // Menu icon - show words list/search
                     GestureDetector(
                       onTap: () async {
                         final result = await Navigator.push(
@@ -1195,9 +1274,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                             ),
                           ),
                         );
-                        // Handle navigation results
                         if (result == 'subsections') {
-                          // Navigate back to subsections
                           final progressKey =
                               '${widget.moduleNumber}_${widget.subsectionNumber}';
                           final progress =
@@ -1205,7 +1282,6 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                           ProgressTracker.setProgress(progressKey, progress);
                           Navigator.pop(context);
                         } else if (result == 'toSubsections') {
-                          // Navigate directly to subsections from copy icon
                           final progressKey =
                               '${widget.moduleNumber}_${widget.subsectionNumber}';
                           final progress =
@@ -1253,7 +1329,8 @@ class _FlashcardScreenState extends State<FlashcardScreen>
                         ),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Icon(Icons.copy, color: Colors.white, size: 24),
+                      child:
+                          Icon(Icons.copy, color: Colors.white, size: 24),
                     ),
                   ],
                 ),

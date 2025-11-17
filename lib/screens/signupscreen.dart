@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/background.dart';
 
+// ============================================================================
+// SECTION 1: SIGNUP SCREEN WIDGET SETUP
+// ============================================================================
+// New user registration screen. Collects name, email, password, and confirmation.
+// After successful signup, navigates to home screen.
+
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
@@ -11,38 +17,68 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen>
     with TickerProviderStateMixin {
+  // ========================================================================
+  // SECTION 2: FORM CONTROLLERS
+  // ========================================================================
+  // Text controllers for each input field
+  
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
+
+  // ========================================================================
+  // SECTION 3: ANIMATION CONTROLLERS
+  // ========================================================================
+  // Controls the fade-in and slide animations of the form
+  
   late AnimationController _containerController;
   late Animation<double> _containerOpacity;
+
+  // ========================================================================
+  // SECTION 4: UI STATE VARIABLES
+  // ========================================================================
+  
+  // Whether password field is hidden or visible
   bool _obscurePassword = true;
+  
+  // Whether confirm password field is hidden or visible
   bool _obscureConfirmPassword = true;
+  
+  // Whether signup button is currently processing
   bool _isSigningUp = false;
 
+  // ========================================================================
+  // SECTION 5: LIFECYCLE METHODS
+  // ========================================================================
+  
   @override
   void initState() {
     super.initState();
+    // Initialize all text controllers
     _nameController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
 
+    // Initialize animation controller for form entrance (800ms)
     _containerController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
+    // Create opacity animation: fade in from 0.0 to 1.0
     _containerOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _containerController, curve: Curves.easeOutCubic),
     );
 
+    // Start animation
     _containerController.forward();
   }
 
   @override
   void dispose() {
+    // Clean up all controllers
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -51,16 +87,30 @@ class _SignupScreenState extends State<SignupScreen>
     super.dispose();
   }
 
+  // ========================================================================
+  // SECTION 6: USER ACTION METHODS
+  // ========================================================================
+  
+  /// Handle signup button tap
+  /// 
+  /// Shows loading animation, then navigates to home after delay
   void _handleSignUp() {
     setState(() => _isSigningUp = true);
+    
+    // Simulate signup delay (1.5 seconds)
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
         setState(() => _isSigningUp = false);
+        // Navigate to home screen
         context.go('/home');
       }
     });
   }
 
+  // ========================================================================
+  // SECTION 7: UI BUILD METHOD
+  // ========================================================================
+  
   @override
   Widget build(BuildContext context) {
     return GesturelyBackground(
@@ -72,7 +122,9 @@ class _SignupScreenState extends State<SignupScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Header icon - small
+                // ============================================================
+                // SECTION 7.1: HEADER ICON
+                // ============================================================
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -95,7 +147,9 @@ class _SignupScreenState extends State<SignupScreen>
 
                 const SizedBox(height: 12),
 
-                // Header text
+                // ============================================================
+                // SECTION 7.2: WELCOME TEXT
+                // ============================================================
                 const Text(
                   'Create Account',
                   style: TextStyle(
@@ -116,7 +170,10 @@ class _SignupScreenState extends State<SignupScreen>
 
                 const SizedBox(height: 20),
 
-                // Large white form container
+                // ============================================================
+                // SECTION 7.3: ANIMATED FORM CONTAINER
+                // ============================================================
+                // All form fields fade in together
                 SlideTransition(
                   position: Tween<Offset>(
                     begin: const Offset(0, 0.3),
@@ -140,7 +197,9 @@ class _SignupScreenState extends State<SignupScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Full Name field
+                          // ================================================
+                          // SECTION 7.3.1: NAME INPUT FIELD
+                          // ================================================
                           const Text(
                             'Full Name',
                             style: TextStyle(
@@ -194,7 +253,9 @@ class _SignupScreenState extends State<SignupScreen>
 
                           const SizedBox(height: 12),
 
-                          // Email field
+                          // ================================================
+                          // SECTION 7.3.2: EMAIL INPUT FIELD
+                          // ================================================
                           const Text(
                             'Email',
                             style: TextStyle(
@@ -248,7 +309,9 @@ class _SignupScreenState extends State<SignupScreen>
 
                           const SizedBox(height: 12),
 
-                          // Password field
+                          // ================================================
+                          // SECTION 7.3.3: PASSWORD INPUT FIELD
+                          // ================================================
                           const Text(
                             'Password',
                             style: TextStyle(
@@ -272,6 +335,7 @@ class _SignupScreenState extends State<SignupScreen>
                                 color: Colors.grey[500],
                                 size: 18,
                               ),
+                              // Visibility toggle
                               suffixIcon: GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -316,7 +380,9 @@ class _SignupScreenState extends State<SignupScreen>
 
                           const SizedBox(height: 12),
 
-                          // Confirm Password field
+                          // ================================================
+                          // SECTION 7.3.4: CONFIRM PASSWORD INPUT FIELD
+                          // ================================================
                           const Text(
                             'Confirm Password',
                             style: TextStyle(
@@ -340,6 +406,7 @@ class _SignupScreenState extends State<SignupScreen>
                                 color: Colors.grey[500],
                                 size: 18,
                               ),
+                              // Visibility toggle
                               suffixIcon: GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -385,7 +452,10 @@ class _SignupScreenState extends State<SignupScreen>
 
                           const SizedBox(height: 16),
 
-                          // Create Account button with GRADIENT
+                          // ================================================
+                          // SECTION 7.3.5: CREATE ACCOUNT BUTTON
+                          // ================================================
+                          // Gradient button with loading indicator
                           Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -421,6 +491,7 @@ class _SignupScreenState extends State<SignupScreen>
                                     mainAxisAlignment:
                                         MainAxisAlignment.center,
                                     children: [
+                                      // Show spinner if loading
                                       if (_isSigningUp)
                                         SizedBox(
                                           width: 18,
@@ -444,6 +515,7 @@ class _SignupScreenState extends State<SignupScreen>
                                             color: Colors.white,
                                           ),
                                         ),
+                                      // Arrow icon next to text
                                       if (!_isSigningUp)
                                         const SizedBox(width: 8),
                                       if (!_isSigningUp)
@@ -466,7 +538,10 @@ class _SignupScreenState extends State<SignupScreen>
 
                 const SizedBox(height: 16),
 
-                // Already have account - pill button single line
+                // ============================================================
+                // SECTION 7.4: SIGN IN LINK
+                // ============================================================
+                // Navigates to login screen if user already has account
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,

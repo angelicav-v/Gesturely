@@ -5,6 +5,12 @@ import 'modulegridscreen.dart';
 import 'profilescreen.dart';
 import 'settingscreen.dart';
 
+// ============================================================================
+// SECTION 1: HOME SCREEN WIDGET SETUP
+// ============================================================================
+// The main landing screen that displays modules in a carousel format.
+// Users can swipe through modules and tap to enter a module.
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -13,9 +19,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // ========================================================================
+  // SECTION 2: STATE VARIABLES
+  // ========================================================================
+  
+  // Page controller for the carousel/swipeable modules
   late PageController _pageController;
+  
+  // Track which module is currently visible (0-3)
   int _currentModule = 0;
 
+  // ========================================================================
+  // SECTION 3: MODULE DATA
+  // ========================================================================
+  // Defines all 4 modules with their metadata (colors, images, titles)
+  // Each module has:
+  // - number: Module ID (1-4)
+  // - title: Display name
+  // - image: Asset path to module image
+  // - gradientStart/End: Background gradient colors
+  // - buttonColor: Color for module badge
+  
   final List<Map<String, dynamic>> modules = [
     {
       'number': 1,
@@ -51,18 +75,28 @@ class _HomeScreenState extends State<HomeScreen> {
     },
   ];
 
+  // ========================================================================
+  // SECTION 4: LIFECYCLE METHODS
+  // ========================================================================
+  
   @override
   void initState() {
     super.initState();
+    // Initialize page controller for carousel swiping
     _pageController = PageController();
   }
 
   @override
   void dispose() {
+    // Clean up page controller when widget is destroyed
     _pageController.dispose();
     super.dispose();
   }
 
+  // ========================================================================
+  // SECTION 5: UI BUILD METHOD
+  // ========================================================================
+  
   @override
   Widget build(BuildContext context) {
     return GesturelyBackground(
@@ -71,7 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              // Header
+              // ================================================================
+              // SECTION 5.1: TOP HEADER BAR
+              // ================================================================
+              // Shows profile, app title, and settings icons
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -80,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Profile icon
+                    // Profile icon button - navigates to profile screen
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -111,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    // Title with gradient
+                    // App title with gradient
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
                         begin: Alignment.centerLeft,
@@ -131,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    // Settings icon
+                    // Settings icon button - navigates to settings screen
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -168,7 +205,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 25),
 
-              // Module button
+              // ================================================================
+              // SECTION 5.2: MODULE INDICATOR BADGE
+              // ================================================================
+              // Shows which module (1-4) is currently being viewed
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -179,9 +219,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
-                      color: modules[_currentModule]['buttonColor'].withOpacity(
-                        0.3,
-                      ),
+                      color: modules[_currentModule]['buttonColor']
+                          .withOpacity(0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -199,11 +238,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 20),
 
-              // Main card carousel
+              // ================================================================
+              // SECTION 5.3: MAIN MODULE CAROUSEL
+              // ================================================================
+              // PageView that allows swiping through modules
+              // Each page shows a module card with image, title, and tap info
               Expanded(
                 flex: 2,
                 child: PageView.builder(
                   controller: _pageController,
+                  // Update current module when page changes
                   onPageChanged: (index) {
                     setState(() {
                       _currentModule = index;
@@ -213,9 +257,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (context, index) {
                     return Stack(
                       children: [
-                        // Colored card background
+                        // ======================================================
+                        // SECTION 5.3.1: MODULE CARD CONTAINER
+                        // ======================================================
+                        // The main colored card showing module info and image
                         GestureDetector(
                           onTap: () {
+                            // Navigate to subsections screen for this module
                             context.push(
                               '/module-subsections',
                               extra: {
@@ -231,6 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             child: Container(
                               decoration: BoxDecoration(
+                                // Gradient background
                                 gradient: LinearGradient(
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -256,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.all(50),
                               child: Column(
                                 children: [
-                                  // Title
+                                  // Module title
                                   Text(
                                     modules[index]['title'],
                                     style: const TextStyle(
@@ -267,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(height: 10),
-                                  // Subtitle
+                                  // Tap to explore hint
                                   const Text(
                                     'Tap to explore',
                                     style: TextStyle(
@@ -278,17 +327,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(height: 35),
-                                  // White content box with module image
+                                  // Module image in white container
                                   Expanded(
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(20),
+                                        borderRadius:
+                                            BorderRadius.circular(20),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacity(
-                                              0.15,
-                                            ),
+                                            color: Colors.black
+                                                .withOpacity(0.15),
                                             blurRadius: 60,
                                             offset: const Offset(0, 20),
                                             spreadRadius: 0,
@@ -296,26 +345,27 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ],
                                       ),
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
+                                        borderRadius:
+                                            BorderRadius.circular(20),
                                         child: Image.asset(
                                           modules[index]['image'],
                                           fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                                return Container(
-                                                  color: Colors.red,
-                                                  child: Center(
-                                                    child: Text(
-                                                      'Error: $error',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: const TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
+                                          errorBuilder: (context, error,
+                                              stackTrace) {
+                                            return Container(
+                                              color: Colors.red,
+                                              child: Center(
+                                                child: Text(
+                                                  'Error: $error',
+                                                  textAlign:
+                                                      TextAlign.center,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
                                                   ),
-                                                );
-                                              },
+                                                ),
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ),
                                     ),
@@ -325,7 +375,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        // Left arrow
+                        // ======================================================
+                        // SECTION 5.3.2: LEFT ARROW BUTTON
+                        // ======================================================
+                        // Navigate to previous module
                         Positioned(
                           left: 8,
                           top: 0,
@@ -335,7 +388,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: () {
                                 if (_currentModule > 0) {
                                   _pageController.previousPage(
-                                    duration: const Duration(milliseconds: 400),
+                                    duration:
+                                        const Duration(milliseconds: 400),
                                     curve: Curves.easeOutCubic,
                                   );
                                 }
@@ -363,7 +417,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        // Right arrow
+                        // ======================================================
+                        // SECTION 5.3.3: RIGHT ARROW BUTTON
+                        // ======================================================
+                        // Navigate to next module
                         Positioned(
                           right: 8,
                           top: 0,
@@ -373,7 +430,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: () {
                                 if (_currentModule < modules.length - 1) {
                                   _pageController.nextPage(
-                                    duration: const Duration(milliseconds: 400),
+                                    duration:
+                                        const Duration(milliseconds: 400),
                                     curve: Curves.easeOutCubic,
                                   );
                                 }
@@ -409,7 +467,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 24),
 
-              // Dot indicators
+              // ================================================================
+              // SECTION 5.4: PROGRESS DOT INDICATORS
+              // ================================================================
+              // Shows which module is currently selected
+              // Large dot for current, small dots for others
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
@@ -417,6 +479,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   (dotIndex) => AnimatedContainer(
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.easeOutCubic,
+                    // Current dot is wider (24px), others are small (8px)
                     width: dotIndex == _currentModule ? 24 : 8,
                     height: 8,
                     margin: const EdgeInsets.symmetric(horizontal: 7),
@@ -432,7 +495,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 55),
 
-              // Bottom navigation
+              // ================================================================
+              // SECTION 5.5: BOTTOM NAVIGATION BAR
+              // ================================================================
+              // Three buttons: Home (highlighted), Apps, Bookmarks
               Container(
                 margin: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -457,7 +523,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Home button (highlighted)
+                    // Home button (highlighted - current screen)
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -478,7 +544,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Modules/Apps button
+                    // Apps button - navigate to grid view
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -501,7 +567,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Bookmark button
+                    // Bookmark button - navigate to bookmarks screen
                     GestureDetector(
                       onTap: () => context.go('/bookmarks'),
                       child: Padding(
