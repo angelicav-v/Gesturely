@@ -10,9 +10,9 @@ class VideoPlayerWidget extends StatefulWidget {
   final String videoPath;
 
   const VideoPlayerWidget({
-    Key? key,
+    super.key,
     required this.videoPath,
-  }) : super(key: key);
+  });
 
   @override
   State<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();

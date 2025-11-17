@@ -59,17 +59,59 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+  # Module logos
     - assets/images/gesturelylogo.png
     - assets/images/module1greetings.png
     - assets/images/module2directions.png
     - assets/images/module3alphabets.png
     - assets/images/module4emotions.png
+    # Module 1 - Common Phrases images
     - assets/images/please.png
     - assets/images/sorry.png
     - assets/images/idea.png
     - assets/images/know.png
+    # Module 1 - Greetings images
     - assets/images/bye(pt.1).png
     - assets/images/bye(pt.2).png
+    # Module 3 - Numbers (1-10)
+    - assets/images/1.png
+    - assets/images/2.png
+    - assets/images/3.png
+    - assets/images/4.png
+    - assets/images/5.png
+    - assets/images/6.png
+    - assets/images/7.png
+    - assets/images/8.png
+    - assets/images/9.png
+    - assets/images/10.png
+    # Module 3 - Alphabet (A-Z)
+    - assets/images/a.png
+    - assets/images/b.png
+    - assets/images/c.png
+    - assets/images/d.png
+    - assets/images/e.png
+    - assets/images/f.png
+    - assets/images/g.png
+    - assets/images/h.png
+    - assets/images/i.png
+    - assets/images/j.png
+    - assets/images/k.png
+    - assets/images/l.png
+    - assets/images/m.png
+    - assets/images/n.png
+    - assets/images/o.png
+    - assets/images/p.png
+    - assets/images/q.png
+    - assets/images/r.png
+    - assets/images/s.png
+    - assets/images/t.png
+    - assets/images/u.png
+    - assets/images/v.png
+    - assets/images/w.png
+    - assets/images/x.png
+    - assets/images/y.png
+    - assets/images/z.png
+    # Videos
     - assets/videos/common_phrases/
     - assets/videos/greetings/
     - assets/videos/directions/
