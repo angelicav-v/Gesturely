@@ -288,7 +288,7 @@ class _FlashcardScreenState extends State<FlashcardScreen>
 
   // Map card names to their media files
   Map<String, dynamic> _getCardMedia(String cardName) {
-    // ALL Module 3 cards are images (Numbers 1-10 and A-Z)
+    // ALL Module 3 and Module 4 subsection 2 (People) cards are images
     const imageCards = {
       // Common Phrases subsection
       'Please', 'Sorry', 'Idea', 'Know',
@@ -299,6 +299,12 @@ class _FlashcardScreenState extends State<FlashcardScreen>
       // Alphabet A-Z
       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
       'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+      // Module 4 - People subsection
+      'Sister (pt.1)', 'Sister (pt.2)', 'Brother (pt.1)', 'Brother (pt.2)',
+      'Mother', 'Father', 'Grandma (pt.1)', 'Grandma (pt.2)', 
+      'Grandpa (pt.1)', 'Grandpa (pt.2)', 'Girl (pt.1)', 'Girl (pt.2)',
+      'Boy (pt.1)', 'Boy (pt.2)', 'Woman (pt.1)', 'Woman (pt.2)',
+      'Man (pt.1)', 'Man (pt.2)',
     };
 
     if (imageCards.contains(cardName)) {
@@ -309,15 +315,17 @@ class _FlashcardScreenState extends State<FlashcardScreen>
         'backContent': 'assets/images/$imageName.png',
       };
     } else {
-      // Video version - EXACT same logic as common phrases
+      // Video version
       final videoName = cardName.toLowerCase().replaceAll(RegExp(r'[^\w]'), '');
       
       // Determine folder based on subsection
       final greetingsCardNames = ['Goodnight', 'Goodmorning', 'Nice to meet you', "What's up?", 'What is your name?', 'My name is', 'Hello'];
       final directionsCardNames = ['Left', 'North', 'South', 'East', 'West', 'Right', 'Where'];
+      final emotionsCardNames = ['Surprised', 'Hungry', 'Tired', 'Angry', 'Worried', 'Happy'];
       
       String folder = greetingsCardNames.contains(cardName) ? 'greetings' 
           : directionsCardNames.contains(cardName) ? 'directions'
+          : emotionsCardNames.contains(cardName) ? 'emotions'
           : 'common_phrases';
       
       return {

@@ -59,7 +59,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-  # Module logos
+    # Module logos
     - assets/images/gesturelylogo.png
     - assets/images/module1greetings.png
     - assets/images/module2directions.png
@@ -115,7 +115,30 @@ flutter:
     - assets/videos/common_phrases/
     - assets/videos/greetings/
     - assets/videos/directions/
-
+      # Module 4 - People images
+    - assets/images/sister(pt.1).png
+    - assets/images/sister(pt.2).png
+    - assets/images/brother(pt.1).png
+    - assets/images/brother(pt.2).png
+    - assets/images/mother.png
+    - assets/images/father.png
+    - assets/images/grandma(pt.1).png
+    - assets/images/grandma(pt.2).png
+    - assets/images/grandpa(pt.1).png
+    - assets/images/grandpa(pt.2).png
+    - assets/images/girl(pt.1).png
+    - assets/images/girl(pt.2).png
+    - assets/images/boy(pt.1).png
+    - assets/images/boy(pt.2).png
+    - assets/images/woman(pt.1).png
+    - assets/images/woman(pt.2).png
+    - assets/images/man(pt.1).png
+    - assets/images/man(pt.2).png
+    # Videos
+    - assets/videos/common_phrases/
+    - assets/videos/greetings/
+    - assets/videos/directions/
+    - assets/videos/emotions/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
